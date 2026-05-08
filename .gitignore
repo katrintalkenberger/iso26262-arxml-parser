@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+
+# VS Code
+.vscode/
+
+# Project specific
+
+# Draw.io backups
+*drawio.bkp
+.*drawio.bkp
+
+
+# Operating system trashl
+.DS_Store
+Thumbs.db
+
