@@ -9,6 +9,8 @@ venv/
 .vscode/
 
 # Project specific
+tests/samples/SampleFile.arxml
+examples/arxml_report_SampleFile.md
 
 # Draw.io backups
 *drawio.bkp
