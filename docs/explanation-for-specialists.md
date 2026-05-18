@@ -125,7 +125,7 @@ The base data type represents the fundamental C-primitive data type on the targe
 
 
 ### Data Type Mapping Sets 
-Die Verbindung zwischen den verschiedenen Abstraktionsebenen der Datentypen erfolgt über ein **Data Type Mapping**. An application data type is mapped to an implementation data dype (`<DATA-TYPE-MAP>`), and the implementation data type can directly relate to ist software base type.
+Die Verbindung zwischen den verschiedenen Abstraktionsebenen der Datentypen erfolgt über ein **Data Type Mapping**. An application data type is mapped to an implementation data dype (`<DATA-TYPE-MAP>`), and the implementation data type can directly relate to its software base type.
 
 ```mermaid
 %%{init: { 'themeVariables': { 'edgeLabelBackground': 'transparent' } } }%%
@@ -153,7 +153,7 @@ In most ARXML descriptions, application data types have software data definition
     Defines the mathematical relationship between the physical value and the internal value (integer/bit pattern).
     - *Categories*: `LINEAR` (Factor/Offset), `BITFIELD-TEXTTABLE` (for status flags), and `SCALE-LINEAR` (for non-linear sensors).
     - *Safety Impact*: Ensuring that scaling overflows are prevented during fixed-point arithmetic.
-- *Data Constraint** (`DATA-CONSTR`)
+- **Data Constraint** (`DATA-CONSTR`)
     Specifies the valid range (min/max) for the data.
         - *Physical Constraints*: Limits based on physical reality (e.g., a car cannot have a negative speed).
         - *Internal Constraints*: Limits based on the implementation (e.g., a 12-bit ADC value).
