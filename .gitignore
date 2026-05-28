@@ -3,21 +3,38 @@ __pycache__/
 *.py[cod]
 *$py.class
 venv/
+.venv/
 .env
 
-# VS Code
-.vscode/
+# Conda / Miniconda environment artifacts
+.conda/
+conda-meta/
 
-# Project specific
-tests/samples/SampleFile.arxml
-examples/arxml_report_SampleFile.md
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.coverage.*
+nosetests.xml
+coverage.xml
+
+# IDEs & Editors
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
 
 # Draw.io backups
 *drawio.bkp
 .*drawio.bkp
 
+# Project specific
+tests/samples/Test_Sample_File.arxml
+examples/arxml_report_Test_Sample_File.md
 
-# Operating system trashl
+# Operating system artifacts
 .DS_Store
 Thumbs.db
-
