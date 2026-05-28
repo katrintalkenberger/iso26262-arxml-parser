@@ -26,12 +26,12 @@ AUTOSAR (root)
 ```
 
 
-## 🧩 Software Component (SWC)
+## Software Component (SWC)
 
 ### Software Component Types
 A software component (SWC) is a modular, reusable unit of functionality in the application layer of the AUTOSAR architecture. There are different types of SWC:
 
-| 📋 Name | 🏷️ XML Tag | 📝 Description | 🎯 Safety Check
+| Name | XML Tag | Description | Safety Check
 | ----- | ----- | ----- | ----- |
 | **Application SWC** | `<APPLICATION-SW-COMPONENT-TYPE>` | The standard component for application logic like cruise control or airbag deployment. It interacts only with **Run-Time Environment (RTE)**, never directly with hardware. | Validation of ASIL-Level.|
 | **Complex Device Driver (CDD) SWC** | `<COMPLEX-DEVICE-DRIVER-SW-COMPONENT-TYPE>` | A hardware-dependent component, time critical, without standard interfaces but direct access to hardware/microcontroller, like fast sensor processing. | Analysis of Timing-Constraints. |
@@ -44,21 +44,21 @@ The following table illustrates which elements each SWC may contain.
 
 | Feature | Application SWC | CDD SWC | Service SWC | Composition SWC |
 | ----- | ----- | ----- | ----- | ----- |
-| **Ports** | ✅ | ✅ | ✅ | ✅ |
-| **Internal Behavior** | ✅ | ✅ | ✅ | ❌ |
-| ∟ Events (Timing, Data) | ✅ | ✅ | ✅ | ➖ |
-| ∟ Runnables | ✅ | ✅ | ✅ | ➖ |
-| ∟ Shared Parameters | ✅ | ✅ | ✅ | ➖ |
-| ∟ Per-Instance Memory (PIM) | ✅ | ✅ | ✅ | ➖ |
-| ∟ Inter-Runnable Variables (IRV) | ✅ | ✅ | ✅ | ➖ |
-| **Data Type Mapping Ref** | ✅ | ✅ | ✅ | ❌ |
-| **Direct HW Access** | ❌ | ✅ | ❌ | ❌ |
+| **Ports** | Yes | Yes | Yes | Yes |
+| **Internal Behavior** | Yes | Yes | Yes | No |
+| ∟ Events (Timing, Data) | Yes | Yes | Yes | – |
+| ∟ Runnables | Yes | Yes | Yes | – |
+| ∟ Shared Parameters | Yes | Yes | Yes | – |
+| ∟ Per-Instance Memory (PIM) | Yes | Yes | Yes | – |
+| ∟ Inter-Runnable Variables (IRV) | Yes | Yes | Yes | – |
+| **Data Type Mapping Ref** | Yes | Yes | Yes | No |
+| **Direct HW Access** | No | Yes | No | No |
 
 
 ### Port Interfaces
 Following the AUTOSAR standard, SWCs never communicate directly with each other. Instead, communication is organized using port interfaces:
 
-| 📋 Name | 🏷️ XML Tag | 📝 Description | 🎯 Safety Check
+| Name | XML Tag | Description | Safety Check
 | ----- | ----- | ----- | ----- |
 | **Sender-Receiver (S/R) Interface** | `<SENDER-RECEIVER-INTERFACE>` | Used when one component sends data and another receives it. Common for transmitting signals like speed, temperature, or pressure. Typically asynchronous. | End-to-End protection (Alive Counter, CRC). |
 | **Client-Server (C/S) Interface** | `<CLIENT-SERVER-INTERFACE>` | Enables one component (the client) to call a service or function provided by another component (the server). Often synchronous, can support return values and error codes. | Validation of Error-Codes and Timeout Checks. |
@@ -68,7 +68,7 @@ Following the AUTOSAR standard, SWCs never communicate directly with each other.
 
 
 
-## 📖 Data Dictionary
+## Data Dictionary
 
 ### Data Types
 AUTOSAR divides data types into three levels of abstraction to separate the physical application from the actual memory implementation.
@@ -80,7 +80,7 @@ There are three basic application data types
 
 - **Application Primitive Data Type (`APPLICATION-PRIMITIVE-DATA-TYPE`)**: The fundamental building blocks of physical data representation, including single values, binary states, and multi-dimensional lookup structures (Curves/Maps).
 
-    | 📋 Category | 🔗 Type Reference | 🛠️ Specifics | 📝 Description |
+    | Category | Type Reference | Specifics | Description |
     | ----- |  ----- | ----- | ----- |
     | `VALUE` | - | - | Represents a physical quantity (e.g. `°C`, `km/h`). Is considered a primitive data type. |
     | `BOOLEAN` | - | - | Represents a binary state or a flag (e.g. `True`/`False`, `On`/`Off`). Is considered a primitive data type. |
@@ -92,13 +92,13 @@ There are three basic application data types
 
 - **Application Array Data Type (`APPLICATION-ARRAY-DATA-TYPE`)**: Describes an array of objects of the same type.
 
-    | 📋 Category | 🏗️ Elements | 🔗 Type Reference | 🛠️ Specifics | 📝 Description |
+    | Category | Elements | Type Reference | Specifics | Description |
     | ----- | ----- | ----- | ----- | ----- |
     | `ARRAY` | `ELEMENT` | `TYPE-TREF` | Dimension: `MAX-NUMBER-OF-ELEMENTS` | A homogeneous collection of data elements, all sharing the same Application Data Type. |
 
 - **Application Record Data Type (`APPLICATION-RECORD-DATA-TYPE`)**: Describes a complex data type that combines different data types into a single logical unit (similar to a struct in C).
 
-    | 📋 Category | 🏗️ Elements | 🔗 Type Reference | 📝 Description |
+    | Category | Elements | Type Reference | Description |
     | ----- | ----- | ----- | ----- |
     | `STRUCTURE` | `APPLICATION-RECORD-ELEMENT` | `TYPE-TREF` | A heterogeneous collection of elements (Records) used to group related data into a single logical structure. |
 
@@ -106,7 +106,7 @@ There are three basic application data types
 #### 2. Implementation Data Type (`IMPLEMENTATION-DATA-TYPE`)
 The implementation data type describes the data type from the perspective of software implementation (e.g., uint16, float32). Used at the software component implementation level (code level).
 
-| 📋 Category | 🏗️ Elements | 🔗 Type Reference | 🛠️ Specifics | 📝 Description |
+| Category | Elements | Type Reference | Specifics | Description |
 | ----- | ----- | ----- | ----- | ----- |
 | `TYPE_REFERENCE` | - | `IMPLEMENTATION-DATA-TYPE-REF ` | - | Alias/Typedef for reusability. |
 | `VALUE` | - | `BASE-TYPE-REF` | - | Scaled integer/float in C-code. References to a base data type. |
@@ -119,7 +119,7 @@ The implementation data type describes the data type from the perspective of sof
 #### 3. Base Data Type (`SW-BASE-TYPE`)
 The base data type represents the fundamental C-primitive data type on the target hardware (e.g. `uint32`, `float64`).
 
-| 📋 Category | 🏗️ Properties | 📝 Description |
+| Category | Properties | Description |
 | ----- | ----- | ----- |
 | `SW-BASE-TYPE` | `BASE-TYPE-SIZE`, `BASE-TYPE-ENCODING` | Defines bit-width (e.g., 8, 16, 32) and alignment. |
 
@@ -146,7 +146,7 @@ Die Verbindung zwischen den verschiedenen Abstraktionsebenen der Datentypen erfo
 ```
 
 
-## ⚙️ Physical Properties
+## Physical Properties
 In most ARXML descriptions, application data types have software data definition properties that include physical data constraints and computation methods that include units. Implementation data types also have software data definition properties, but they include internal data constraints and references to software base types.
 
 - **Computation Method** (`COMPU-METHODS`)

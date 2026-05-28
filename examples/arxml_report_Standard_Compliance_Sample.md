@@ -10,37 +10,37 @@ This document contains the static architectural analysis and the  compliance che
 
 ## 🧩 Software Component Details
 
-### Software Component: HMI
+### Software Component: ValidApp_SWC
 
 #### Runnables
 | Runnable name | Event type | Event name | Additional info |
 | :--- | :--- | :--- | :--- |
-| HMI_MainFunction | TIMING-EVENT | TE_HMI_MainFunction_100ms | Period: 0.1s |
+| Cyclic_Runnable | TIMING-EVENT | Timer_10ms_Event | Period: 0.01s |
 
 
 #### Per-Instance Memories (PIMs)
-N/A
+- `Velocity_Filtered_PIM`
+- `Acceleration_State_PIM`
 
 #### Shared Parameters
-N/A
+- `Filter_Gain_Param`
 
 ---
 
-### Software Component: SeatManger
+### Software Component: ValidCdd_SWC
 
 #### Runnables
 | Runnable name | Event type | Event name | Additional info |
 | :--- | :--- | :--- | :--- |
-| SeatManger_SetHeight | DATA-RECEIVED-EVENT | DRE_rpSeatCtrlBtn_DE_HeightBtnState | N/A |
-| SeatManger_SetIncline | DATA-RECEIVED-EVENT | DRE_rpSeatCtrlBtn_DE_InclinceBtnState | N/A |
-| SeatManger_SetSlide | DATA-RECEIVED-EVENT | DRE_rpSeatCtrlBtn_DE_SlideBtnState | N/A |
+| Hardware_Runnable | OPERATION-INVOKED-EVENT | ClientRequest_Event | N/A |
 
 
 #### Per-Instance Memories (PIMs)
-N/A
+- `Hardware_Register_Buffer_PIM`
 
 #### Shared Parameters
-N/A
+- `Sensor_Calibration_Offset_Param`
+- `SPI_Baudrate_Config_Param`
 
 ---
 
