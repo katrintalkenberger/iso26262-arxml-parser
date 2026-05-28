@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AUTOSAR xmlns="http://autosar.org" xmlns:xsi="http://w3.org" xsi:schemaLocation="http://autosar.org autosar_4-2-1.xsd">
+  <AR-PACKAGES>
+    <AR-PACKAGE>
+      <SHORT-NAME>FaultyArchitecture</SHORT-NAME>
+      <ELEMENTS>
+
+        <!-- FAULTY ATOMIC SWC (SERVICE COMPONENT) -->
+        <SERVICE-SW-COMPONENT-TYPE>
+          <SHORT-NAME>NonCompliant_Service_SWC</SHORT-NAME>
+          <INTERNAL-BEHAVIORS>
+            <SWC-INTERNAL-BEHAVIOR>
+              <SHORT-NAME>Faulty_Behavior</SHORT-NAME>
+              <EVENTS>
+                
+                <!-- VIOLATION 1: Orphaned Event (Missing START-ON-EVENT-REF) -->
+                <TIMING-EVENT>
+                  <SHORT-NAME>Orphaned_Timer_Event</SHORT-NAME>
+                  <PERIOD>0.02</PERIOD>
+                </TIMING-EVENT>
+
+                <!-- VIOLATION 2: Invalid Timing Period (Zero value) -->
+                <TIMING-EVENT>
+                  <SHORT-NAME>Critical_ZeroTiming_Event</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/FaultyArchitecture/ComponentTypes/NonCompliant_Service_SWC/Faulty_Behavior/Standard_Runnable</START-ON-EVENT-REF>
+                  <PERIOD>0.0</PERIOD>
+                </TIMING-EVENT>
+
+              </EVENTS>
+              <RUNNABLE-ENTITIES>
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>Standard_Runnable</SHORT-NAME>
+                </RUNNABLE-ENTITY>
+
+                <!-- VIOLATION 3: Untriggered Runnable (Passive / Never called) -->
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>Passive_Unused_Runnable</SHORT-NAME>
+                </RUNNABLE-ENTITY>
+              </RUNNABLE-ENTITIES>
+              
+              <AR-TYPED-PER-INSTANCE-MEMORYS>
+                <PER-INSTANCE-MEMORY>
+                  <SHORT-NAME>Fault_Logger_History_PIM</SHORT-NAME>
+                </PER-INSTANCE-MEMORY>
+              </AR-TYPED-PER-INSTANCE-MEMORYS>
+              
+              <SHARED-PARAMETERS>
+                <PARAMETER-DATA-PROTOTYPE>
+                  <SHORT-NAME>Max_Allowed_Retries_Param</SHORT-NAME>
+                </PARAMETER-DATA-PROTOTYPE>
+              </SHARED-PARAMETERS>
+              
+            </SWC-INTERNAL-BEHAVIOR>
+          </INTERNAL-BEHAVIORS>
+        </SERVICE-SW-COMPONENT-TYPE>
+
+      </ELEMENTS>
+    </AR-PACKAGE>
+  </AR-PACKAGES>
+</AUTOSAR>

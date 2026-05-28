@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AUTOSAR xmlns="http://autosar.org" xmlns:xsi="http://w3.org" xsi:schemaLocation="http://autosar.org autosar_4-2-1.xsd">
+  <AR-PACKAGES>
+    <AR-PACKAGE>
+      <SHORT-NAME>VehicleArchitecture</SHORT-NAME>
+      <ELEMENTS>
+        
+        <!-- 1. COMPOSITION SOFTWARE COMPONENT -->
+        <COMPOSITION-SW-COMPONENT-TYPE>
+          <SHORT-NAME>TopLevel_Composition</SHORT-NAME>
+          <COMPONENTS>
+            <SW-COMPONENT-PROTOTYPE>
+              <SHORT-NAME>App_Prototype</SHORT-NAME>
+              <TYPE-TREF DEST="APPLICATION-SW-COMPONENT-TYPE">/VehicleArchitecture/ComponentTypes/ValidApp_SWC</TYPE-TREF>
+            </SW-COMPONENT-PROTOTYPE>
+            <SW-COMPONENT-PROTOTYPE>
+              <SHORT-NAME>Cdd_Prototype</SHORT-NAME>
+              <TYPE-TREF DEST="COMPLEX-DEVICE-DRIVER-SW-COMPONENT-TYPE">/VehicleArchitecture/ComponentTypes/ValidCdd_SWC</TYPE-TREF>
+            </SW-COMPONENT-PROTOTYPE>
+          </COMPONENTS>
+        </COMPOSITION-SW-COMPONENT-TYPE>
+
+        <!-- 2. VALID ATOMIC SWC (APPLICATION) -->
+        <APPLICATION-SW-COMPONENT-TYPE>
+          <SHORT-NAME>ValidApp_SWC</SHORT-NAME>
+          <INTERNAL-BEHAVIORS>
+            <SWC-INTERNAL-BEHAVIOR>
+              <SHORT-NAME>ValidApp_Behavior</SHORT-NAME>
+              <EVENTS>
+                <TIMING-EVENT>
+                  <SHORT-NAME>Timer_10ms_Event</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/VehicleArchitecture/ComponentTypes/ValidApp_SWC/ValidApp_Behavior/Cyclic_Runnable</START-ON-EVENT-REF>
+                  <PERIOD>0.01</PERIOD>
+                </TIMING-EVENT>
+              </EVENTS>
+              <RUNNABLE-ENTITIES>
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>Cyclic_Runnable</SHORT-NAME>
+                </RUNNABLE-ENTITY>
+              </RUNNABLE-ENTITIES>
+              <AR-TYPED-PER-INSTANCE-MEMORYS>
+                <PER-INSTANCE-MEMORY>
+                  <SHORT-NAME>Velocity_Filtered_PIM</SHORT-NAME>
+                </PER-INSTANCE-MEMORY>
+                <PER-INSTANCE-MEMORY>
+                  <SHORT-NAME>Acceleration_State_PIM</SHORT-NAME>
+                </PER-INSTANCE-MEMORY>
+              </AR-TYPED-PER-INSTANCE-MEMORYS>
+              <SHARED-PARAMETERS>
+                <PARAMETER-DATA-PROTOTYPE>
+                  <SHORT-NAME>Filter_Gain_Param</SHORT-NAME>
+                </PARAMETER-DATA-PROTOTYPE>
+              </SHARED-PARAMETERS>
+            </SWC-INTERNAL-BEHAVIOR>
+          </INTERNAL-BEHAVIORS>
+        </APPLICATION-SW-COMPONENT-TYPE>
+
+        <!-- 3. VALID ATOMIC SWC (COMPLEX DEVICE DRIVER) -->
+        <COMPLEX-DEVICE-DRIVER-SW-COMPONENT-TYPE>
+          <SHORT-NAME>ValidCdd_SWC</SHORT-NAME>
+          <INTERNAL-BEHAVIORS>
+            <SWC-INTERNAL-BEHAVIOR>
+              <SHORT-NAME>ValidCdd_Behavior</SHORT-NAME>
+              <EVENTS>
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>ClientRequest_Event</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/VehicleArchitecture/ComponentTypes/ValidCdd_SWC/ValidCdd_Behavior/Hardware_Runnable</START-ON-EVENT-REF>
+                  <CLIENT-SERVER-OPERATION>
+                    <SHORT-NAME>ReadSensorData</SHORT-NAME>
+                  </CLIENT-SERVER-OPERATION>
+                </OPERATION-INVOKED-EVENT>
+              </EVENTS>
+              <RUNNABLE-ENTITIES>
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>Hardware_Runnable</SHORT-NAME>
+                </RUNNABLE-ENTITY>
+              </RUNNABLE-ENTITIES>
+              <AR-TYPED-PER-INSTANCE-MEMORYS>
+                <PER-INSTANCE-MEMORY>
+                  <SHORT-NAME>Hardware_Register_Buffer_PIM</SHORT-NAME>
+                </PER-INSTANCE-MEMORY>
+              </AR-TYPED-PER-INSTANCE-MEMORYS>
+              <SHARED-PARAMETERS>
+                <PARAMETER-DATA-PROTOTYPE>
+                  <SHORT-NAME>Sensor_Calibration_Offset_Param</SHORT-NAME>
+                </PARAMETER-DATA-PROTOTYPE>
+                <PARAMETER-DATA-PROTOTYPE>
+                  <SHORT-NAME>SPI_Baudrate_Config_Param</SHORT-NAME>
+                </PARAMETER-DATA-PROTOTYPE>
+              </SHARED-PARAMETERS>
+            </SWC-INTERNAL-BEHAVIOR>
+          </INTERNAL-BEHAVIORS>
+        </COMPLEX-DEVICE-DRIVER-SW-COMPONENT-TYPE>
+
+      </ELEMENTS>
+    </AR-PACKAGE>
+  </AR-PACKAGES>
+</AUTOSAR>
