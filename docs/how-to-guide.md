@@ -67,8 +67,10 @@ This guide explains how to inject faults into an ARXML file to test the parser's
 
 ### Sourcing Industry ARXML Examples
 If you want to test the parser with large-scale, third-party AUTOSAR files, you can use open-source repository extracts such as:
-* [tests/samples/EcuExtract.arxml](tests/samples/EcuExtract.arxml) from the [patrikja autosar](https://github.com/patrikja/autosar) repository (BSD 3-Clause License).
-* [tests/samples/TestApp.arxml](tests/samples/TestApp.arxml) from the [mahmut-aksakalli arxml-viewer](https://github.com/mahmut-aksakalli/arxml-viewer) repository (MIT License).
+* `EcuExtract.arxml` from the [patrikja autosar](https://github.com/patrikja/autosar) repository (BSD 3-Clause License).
+* `TestApp.arxml` from the [mahmut-aksakalli arxml-viewer](https://github.com/mahmut-aksakalli/arxml-viewer) repository (MIT License).
+
+Download the files and place them in `tests/samples/` to run the parser against them.
 
 ### Injecting Structural Faults for Validation Testing
 
