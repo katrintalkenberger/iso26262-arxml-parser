@@ -4,12 +4,13 @@ This module resolves file paths from command-line arguments, triggers the
 core AUTOSAR parsing sequence, and coordinates the functional safety 
 validation and reporting pipeline.
 """
-
-import sys
 import os
-from typing import List, Dict, Any, Tuple
+import sys
+from typing import Any
+
 from src.arxml_parser import ARXMLParser
-from src.exceptions import ARXMLToolError, ARXMLFileNotFoundError
+from src.exceptions import ARXMLFileNotFoundError, ARXMLToolError
+
 
 def process_arxml_architecture(arxml_file: str, arxml_report_file: str) -> None:
     """Executes the full parsing, validation, and reporting pipeline for an ARXML file.
@@ -47,8 +48,8 @@ def process_arxml_architecture(arxml_file: str, arxml_report_file: str) -> None:
 
     # 2. Process Atomic Software Components and evaluate ISO 26262 compliance
     atomic_swcs = parser.get_all_atomic_swcs()
-    all_swc_details: List[Dict[str, Any]] = []
-    all_architecture_issues: List[Dict[str, str]] = []
+    all_swc_details: list[dict[str, Any]] = []
+    all_architecture_issues: list[dict[str, str]] = []
 
     print(f"\nProcessing {len(atomic_swcs)} Atomic Software Components...")
     for swc in atomic_swcs:
@@ -70,7 +71,7 @@ def process_arxml_architecture(arxml_file: str, arxml_report_file: str) -> None:
     print(f"\nAnalysis complete. Report generated at: {arxml_report_file}")
 
 
-def resolve_paths() -> Tuple[str, str]:
+def resolve_paths() -> tuple[str, str]:
     """Validates CLI inputs, applies fallbacks, and derives output targets.
 
     Evaluates the command-line arguments provided via sys.argv. If valid,
@@ -79,7 +80,7 @@ def resolve_paths() -> Tuple[str, str]:
     predefined test sample file.
 
     Returns:
-        Tuple[str, str]: A tuple containing two strings:
+        tuple[str, str]: A tuple containing two strings:
             - The absolute validated path to the input ARXML file.
             - The calculated target path for the Markdown report.
 
@@ -88,9 +89,7 @@ def resolve_paths() -> Tuple[str, str]:
             exist on the physical file system.
     """
     arxml_file = ""
-
-    print(f"----- Länge der Input Parameter: {len(sys.argv)}")
-
+    
     # Check CLI argument(s)
     if len(sys.argv) < 2:
         print("INFO: Missing input argument. Switching to default sample file.") 

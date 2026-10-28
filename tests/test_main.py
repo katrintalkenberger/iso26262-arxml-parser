@@ -1,18 +1,18 @@
-import pytest
 import os
-import runpy
 import sys
-from typing import Dict
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
+
+import pytest
+
 from src import main
 from src.exceptions import ARXMLFileNotFoundError
 
 # =====================================================================
-# PYTEST FIXTURES (Gemeinsames Setup für alle Tests)
+# PYTEST FIXTURES (Setup for all tests)
 # =====================================================================
 
 @pytest.fixture
-def setup_repo_structure(tmp_path) -> Dict[str, str]:
+def setup_repo_structure(tmp_path) -> dict[str, str]:
     """Creates a virtual repository structure in the temporary folder."""
     # Create the folder structure for the default ARXML file starting from the temp_path
     fake_default_dir = tmp_path / "tests" / "samples"
@@ -27,7 +27,7 @@ def setup_repo_structure(tmp_path) -> Dict[str, str]:
     # Set the folder path of main.py
     simulated_main_path = str(tmp_path / "src" / "main.py")
 
-    # Wir geben die Pfade als Dictionary an die Tests weiter
+    # Pass the paths to the tests as dictionary
     return {
         "fake_default": str(fake_default),
         "examples_dir": str(examples_dir),
@@ -40,10 +40,10 @@ def setup_repo_structure(tmp_path) -> Dict[str, str]:
 # =====================================================================
 
 def test_resolve_paths_missing_arguments(capsys, setup_repo_structure):
-    """Prüft, ob bei komplett fehlenden Argumenten auf die Default-Datei gewechselt wird."""
+    """Check whether the system switches to the default file when no arguments are provided at all."""
     env = setup_repo_structure
 
-    # Wir simulieren: Nur der Skriptname ist in sys.argv (keine Zusatzargumente)
+    # Simulate: only script name is in sys.argv (no additional arguments)
     with patch('os.path.abspath', return_value=env["simulated_main_path"]), \
          patch.object(sys, 'argv', ['main.py']), \
          patch('os.getcwd', return_value=env["tmp_path"]):

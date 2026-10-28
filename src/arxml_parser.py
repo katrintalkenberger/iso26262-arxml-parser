@@ -5,10 +5,13 @@ to safely load XML structures, extract architectural metadata, and execute
 structural functional safety checks for automotive software components.
 """
 
-import lxml.etree as ET
 import os
-from typing import Dict, List, Tuple, Any, Optional
+from typing import Any, Optional
+
+import lxml.etree as ET
+
 from src.exceptions import ARXMLValidationError
+
 
 class ARXMLParser:
     """Parses and validates functional safety attributes from AUTOSAR files.
@@ -68,7 +71,7 @@ class ARXMLParser:
             print(f"Error loading ARXML: {e}")
             return False
 
-    def get_elements(self, element: ET._Element, tag_name: str, direct_only: bool=True) -> List[ET._Element]:
+    def get_elements(self, element: ET._Element, tag_name: str, direct_only: bool=True) -> list[ET._Element]:
         """Finds all child elements matching the given local XML tag name.
 
         Uses localized XPath queries to bypass strict namespace prefixes,
@@ -83,7 +86,7 @@ class ARXMLParser:
                 ('.//').
 
         Returns:
-            List[ET._Element]: A list of matching lxml element nodes. 
+            list[ET._Element]: A list of matching lxml element nodes. 
                 Returns an empty list if no elements match the criteria.
         """
         xpath_prefix = "./" if direct_only else ".//"
@@ -144,12 +147,12 @@ class ARXMLParser:
         the high-level software component architecture mapping.
 
         Returns:
-            List[ET._Element]: A list of matching lxml elements representing
+            list[ET._Element]: A list of matching lxml elements representing
                 COMPOSITION-SW-COMPONENT-TYPE structures.
         """
         return self.get_elements(self.root,"COMPOSITION-SW-COMPONENT-TYPE",direct_only=False)
     
-    def get_composition_swc_ref(self, composition: ET._Element) -> Dict[str, List[str]]:
+    def get_composition_swc_ref(self, composition: ET._Element) -> dict[str, list[str]]:
         """Maps all internal software component prototype references.
 
         Iterates through the structural prototypes of a composition component
@@ -160,18 +163,18 @@ class ARXMLParser:
                 to analyze.
 
         Returns:
-            Dict[str, List[str]]: A dictionary containing architecture maps:
-                - "swc_names": List of prototype short-names.
-                - "swc_refs": List of corresponding type references (TREF).
+            dict[str, list[str]]: A dictionary containing architecture maps:
+                - "swc_names": list of prototype short-names.
+                - "swc_refs": list of corresponding type references (TREF).
         """
-        data: Dict[str, List[str]] = {"swc_names": [], "swc_refs": []}
+        data: dict[str, list[str]] = {"swc_names": [], "swc_refs": []}
         all_swc = self.get_elements(composition,"SW-COMPONENT-PROTOTYPE",direct_only=False)
         for swc in all_swc:
             data["swc_names"].append(self.get_element_text(swc,"SHORT-NAME"))
             data["swc_refs"].append(self.get_element_text(swc,"TYPE-TREF"))
         return data
 
-    def get_all_atomic_swcs(self) -> List[ET._Element]:
+    def get_all_atomic_swcs(self) -> list[ET._Element]:
         """Scans the structure for all standard Atomic Software Component Types.
 
         Queries the XML tree for component definitions while filtering out 
@@ -179,7 +182,7 @@ class ARXMLParser:
         Driver (CDD), and Service software component types.
 
         Returns:
-            List[ET._Element]: A filtered list of lxml element nodes matching 
+            list[ET._Element]: A filtered list of lxml element nodes matching 
                 the atomic component criteria. Returns an empty list if the 
                 tree root is uninitialized.
         """
@@ -191,7 +194,7 @@ class ARXMLParser:
         )
         return self.root.xpath(xpath_query)
     
-    def get_swc_internal_behavior(self, swc_element: ET._Element) -> Tuple[Dict[str, Any], List[Dict[str, str]]]:
+    def get_swc_internal_behavior(self, swc_element: ET._Element) -> tuple[dict[str, Any], list[dict[str, str]]]:
         """Parses internal behaviors and runs structural ISO 26262 safety checks.
 
         Extracts runtime attributes (Events, Runnables, Per-Instance Memory, 
@@ -203,10 +206,10 @@ class ARXMLParser:
                 to evaluate.
 
         Returns:
-            Tuple[Dict[str, Any], List[Dict[str, str]]]: A compound tuple:
-                - Dict[str, Any]: Extracted metadata maps for events, 
+            tuple[dict[str, Any], list[dict[str, str]]]: A compound tuple:
+                - dict[str, Any]: Extracted metadata maps for events, 
                   runnables, pims, and parameters.
-                - List[Dict[str, str]]: A list of structural safety issues, 
+                - list[dict[str, str]]: A list of structural safety issues, 
                   where each issue contains 'severity', 'type', and 
                   'description' keys.
         """       
@@ -339,9 +342,9 @@ class ARXMLParser:
         Markdown compliance document.
 
         Args:
-            all_swc_details (List[Dict[str, Any]]): Extracted configuration 
+            all_swc_details (list[dict[str, Any]]): Extracted configuration 
                 and behavior metadata from all processed atomic components.
-            all_architecture_issues (List[Dict[str, str]]): List of collected 
+            all_architecture_issues (list[dict[str, str]]): list of collected 
                 safety and integrity discrepancies found during analysis.
             filename (str): Target file system path where the report file 
                 will be written.

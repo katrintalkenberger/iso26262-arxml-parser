@@ -1,16 +1,16 @@
-import pytest
 import os
 from pathlib import Path
-from typing import Dict
+
+import pytest
+
 from src.arxml_parser import ARXMLParser
-from src.exceptions import ARXMLValidationError
 
 # =====================================================================
-# PYTEST FIXTURE (Erzeugt die minimalen XML-Testdaten)
+# PYTEST FIXTURE (Generates the minimal XML test data)
 # =====================================================================
 
 @pytest.fixture
-def parser_env(tmp_path: Path) -> Dict[str, str]:
+def parser_env(tmp_path: Path) -> dict[str, str]:
     """Create temporary ARXML content for testing the parser."""
     # 1. Valid AUTOSAR document containing components, events, and runnables
     valid_content = (
