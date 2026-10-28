@@ -67,7 +67,7 @@ def parser_env(tmp_path: Path) -> dict[str, str]:
 # =====================================================================
 
 def test_parser_load_success(parser_env):
-    """Check if valid ARXXML file is loaded without errors."""
+    """Check if valid ARXML file is loaded without errors."""
     parser = ARXMLParser(parser_env["valid_path"])
     assert parser.load() is True
     assert parser.root is not None
