@@ -1,0 +1,7 @@
+%%{init: { 'theme': 'neutral', 'themeVariables': {'fontFamily': 'Helvetica', 'fontSize': '12px'} } }%%
+graph LR
+    A[Befehl: VOLLGAS] --> C{Wächter-Check}
+    B[Gaspedal gedrückt?] --> C
+    C -- "JA<br><br>" --> D[Motor gibt Gas]
+    C -- "<br>NEIN" --> E[FEHLER! Motor aus]
+    style E fill:#f99,stroke:#333,stroke-width:5px

@@ -62,7 +62,7 @@ I am building this project "in public" using the **Diataxis Framework** to ensur
 
 ## 🗺️ Roadmap & Upcoming Features
 
-This project is actively maintained. The following features are planned for future releases to enhance code quality and engineering efficiency:
+The following features are planned for future releases to enhance code quality and engineering efficiency:
 
 - [x] Basic ARXML Parsing (SWC Types, Composition Layouts)
 - [x] ISO 26262 Structural Integrity Compliance Check (Orphaned Events & Runnables)
