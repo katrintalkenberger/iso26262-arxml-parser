@@ -97,11 +97,11 @@ def test_resolve_paths_invalid_extension(capsys, setup_repo_structure):
 
 def test_resolve_paths_file_not_found():
     """Check if custom exception is thrown if file is missing."""
-    with patch.object(sys, 'argv', ['main.py', 'non-exsisting-file.arxml']), \
+    with patch.object(sys, 'argv', ['main.py', 'non-existing-file.arxml']), \
          patch('os.path.exists', return_value=False):
         
         # Test: Correct warning issued?
-        with pytest.raises(ARXMLFileNotFoundError, match="File not found: non-exsisting-file.arxml"):
+        with pytest.raises(ARXMLFileNotFoundError, match="File not found: non-existing-file.arxml"):
             main.resolve_paths()
 
 
