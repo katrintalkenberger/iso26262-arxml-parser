@@ -55,7 +55,7 @@ I am building this project "in public" using the **Diataxis Framework** to ensur
 
 # 💻 Tech Stack
 
-- **Language:** Python 3.10+
+- **Language:** Python 3.11+
 - **Parsing:** lxml (for high-performance XPath queries)
 - **Documentation:** Markdown & Mermaid.js
 - **Methodology:** Diataxis Framework
