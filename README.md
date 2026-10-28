@@ -1,3 +1,9 @@
+# ISO 26262 ARXML Parser
+
+[![Tests](https://github.com/katrintalkenberger/iso26262-arxml-parser/actions/workflows/tests.yml/badge.svg)](https://github.com/katrintalkenberger/iso26262-arxml-parser/actions/workflows/tests.yml)
+
+Python-based consistency checks for AUTOSAR ARXML files.
+
 # 🙋‍♀️ "Mom, what do you actually do at work?"
 
 My children have asked me this many times. To be honest, the answer isn't as simple as "I’m a baker, I bake bread." Usually, I stumble through an explanation about writing computer programs that make cars safe.
@@ -32,7 +38,7 @@ I am building this project "in public" using the **Diataxis Framework** to ensur
 
 - [x] **[Explanation for Kids (DE)](docs/explanations/explanation-for-kids_DE.md)** – *Peer-reviewed by my 10-year-olds.*
 - [x] **[Explanation for Kids (EN)](docs/explanations/explanation-for-kids_EN.md)**
-- [x] **[Explanation for Specialists (EN)](docs/eexplanations/xplanation-for-specialists.md)** – Deep dive into AUTOSAR structures.
+- [x] **[Explanation for Specialists (EN)](docs/explanations/explanation-for-specialists.md)** – Deep dive into AUTOSAR structures.
 - [x] **[Explanation for Testers (EN)](docs/explanations/explanation-for-testers.md)** – Explanation of testing philosophy and coverage strategy.
 - [x] **[Tutorial](docs/tutorial.md)** – Step-by-step learning guide for execution and verification.
 - [x] **[How-To Guide](docs/how-to-guide.md)** – Practical recipes for fault injection and testing.
