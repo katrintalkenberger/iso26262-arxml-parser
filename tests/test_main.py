@@ -17,7 +17,7 @@ def setup_repo_structure(tmp_path) -> Dict[str, str]:
     # Create the folder structure for the default ARXML file starting from the temp_path
     fake_default_dir = tmp_path / "tests" / "samples"
     fake_default_dir.mkdir(parents=True, exist_ok=True)
-    fake_default = fake_default_dir / "SampleFile.arxml"
+    fake_default = fake_default_dir / "Standard_Compliance_Sample.arxml"
     fake_default.write_text("<AUTOSAR></AUTOSAR>")
 
      # Create the folder structure for the output report starting from the temp_path
@@ -71,7 +71,7 @@ def test_resolve_paths_too_many_arguments(capsys, setup_repo_structure):
         
         # Test 1: Correct setup of the default path?
         assert input_file == env["fake_default"]
-        assert "arxml_report_SampleFile.md" in output_report
+        assert "arxml_report_Standard_Compliance_Sample.md" in output_report
         
         # Test 2: Correct warning issued?
         captured = capsys.readouterr()
@@ -131,7 +131,7 @@ def test_resolve_paths_removes_existing_report(setup_repo_structure):
     env = setup_repo_structure
     
     # Use the temporary examples directory from Fixture to create a report file
-    existing_report = os.path.join(env["examples_dir"], "arxml_report_SampleFile.md")
+    existing_report = os.path.join(env["examples_dir"], "arxml_report_Standard_Compliance_Sample.md")
 
     # Write report file
     with open(existing_report, "w") as f:

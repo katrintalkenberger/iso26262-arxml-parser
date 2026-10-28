@@ -30,10 +30,10 @@ I am building this project "in public" using the **Diataxis Framework** to ensur
 
 ## Documentation (Docs-as-Code)
 
-- [x] **[Explanation for Kids (DE)](docs/explanation-for-kids_DE.md)** – *Peer-reviewed by my 10-year-olds.*
-- [x] **[Explanation for Kids (EN)](docs/explanation-for-kids_EN.md)**
-- [x] **[Explanation for Specialists (EN)](docs/explanation-for-specialists.md)** – Deep dive into AUTOSAR structures.
-- [x] **[Explanation for Testers (EN)](docs/explanation-for-testers.md)** – Explanation of testing philosophy and coverage strategy.
+- [x] **[Explanation for Kids (DE)](docs/explanations/explanation-for-kids_DE.md)** – *Peer-reviewed by my 10-year-olds.*
+- [x] **[Explanation for Kids (EN)](docs/explanations/explanation-for-kids_EN.md)**
+- [x] **[Explanation for Specialists (EN)](docs/eexplanations/xplanation-for-specialists.md)** – Deep dive into AUTOSAR structures.
+- [x] **[Explanation for Testers (EN)](docs/explanations/explanation-for-testers.md)** – Explanation of testing philosophy and coverage strategy.
 - [x] **[Tutorial](docs/tutorial.md)** – Step-by-step learning guide for execution and verification.
 - [x] **[How-To Guide](docs/how-to-guide.md)** – Practical recipes for fault injection and testing.
 - [x] **[Reference](docs/reference.md)** – Strict API, CLI, and Exception specifications.
