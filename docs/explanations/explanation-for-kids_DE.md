@@ -66,7 +66,7 @@ Es werden konkrete Lösungen gebaut (programmiert), die Fehler erkennen und verm
 
 | 🕵️ Situation | ⚠️ Fehler | 🎯 Sicherheitsmechanismus |
 | --------- | --------- | ---------- |
-| Spielstraße | Motor gibt grundlos Vollgas.  | Doppel-Check: Das Motorsteuergerät glaubt dem Befehl „Vollgas“ nur, wenn auch ein zweiter Sensor sagt: „Ja, das Pedal ist wirklich gedrückt!“ <br> <img src="../assets/graph-saftey-mechanism.svg" width="400">|
+| Spielstraße | Motor gibt grundlos Vollgas.  | Doppel-Check: Das Motorsteuergerät glaubt dem Befehl „Vollgas“ nur, wenn auch ein zweiter Sensor sagt: „Ja, das Pedal ist wirklich gedrückt!“ <br> <img src="../assets/graph-safety-mechanism.svg" width="400">|
 | Stadt/Tunnel | Scheinwerfer fällt aus. | Das Steuergerät am Scheinwerferlicht prüft sich immer wieder selbst, ob alles funktioniert. |
 | Einparken  | Kamera zeigt falsches Bild. | Das Steuergerät an der Rückfahrkamera merkt, dass das Bild eingefroren ist und schickt ein "nur schwarzes Bild anzeigen" Signal heraus. |
 
