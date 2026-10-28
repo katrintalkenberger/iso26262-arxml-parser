@@ -6,7 +6,7 @@ structural functional safety checks for automotive software components.
 """
 
 import os
-from typing import Any, Optional
+from typing import Any
 
 import lxml.etree as ET
 
@@ -67,7 +67,7 @@ class ARXMLParser:
                 auto_ns = self.root.tag.split("}")[0].strip("{")
                 self.ns = {'ns': auto_ns}
             return True        
-        except Exception as e:
+        except (OSError, ET.XMLSyntaxError, ARXMLValidationError) as e:
             print(f"Error loading ARXML: {e}")
             return False
 
@@ -116,7 +116,7 @@ class ARXMLParser:
         return elements[0] if elements else default
 
 
-    def get_element_text(self, element: ET._Element, tag_name: str, direct_only: bool = True, default: Any = None) -> Optional[str]:
+    def get_element_text(self, element: ET._Element, tag_name: str, direct_only: bool = True, default: Any = None) -> str | None:
         """Extracts the stripped text content of an ARXML element.
 
         Queries the node for a specific child tag and extracts its text
@@ -132,7 +132,7 @@ class ARXMLParser:
                 does not exist or contains no text. Defaults to None.
 
         Returns:
-            Optional[str]: The stripped text value of the element if found; 
+            str | None: The stripped text value of the element if found; 
                 otherwise, the specified default value.
         """
         xpath_prefix = "./" if direct_only else ".//"
