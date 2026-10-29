@@ -160,3 +160,36 @@ def test_export_to_markdown_generation(parser_env, tmp_path) -> None:
         content = f.read()
         assert "# AUTOSAR Architecture & ISO 26262 Safety Report" in content
         assert "EngineCtrl" in content
+
+
+@pytest.mark.parametrize(
+    "period_xml",
+    [
+        "<PERIOD>abc</PERIOD>",
+        "<PERIOD>0</PERIOD>",
+        "<PERIOD>-0.01</PERIOD>",
+        "<PERIOD>nan</PERIOD>",
+        "<PERIOD>inf</PERIOD>",
+        "<PERIOD></PERIOD>",
+        "",
+    ],
+    ids=["non-numeric", "zero", "negative", "nan", "inf", "empty", "missing"],
+)
+def test_invalid_timing_period_is_reported(parser_env, tmp_path, period_xml) -> None:
+    """Check if an invalid PERIOD is reported as CRITICAL instead of crashing."""
+    # Reuse the valid fixture file and replace the period of 'T_10ms_Event'
+    content = Path(parser_env["valid_path"]).read_text(encoding="utf-8")
+    content = content.replace("<PERIOD>0.01</PERIOD>", period_xml, 1)
+    test_file = tmp_path / "invalid_period_test.arxml"
+    test_file.write_text(content, encoding="utf-8")
+
+    parser = ARXMLParser(str(test_file))
+    assert parser.load() is True
+
+    swc = parser.get_all_atomic_swcs()[0]
+    _, issues = parser.get_swc_internal_behavior(swc)
+
+    timing_issues = [i for i in issues if i["type"] == "Invalid Timing"]
+    assert len(timing_issues) == 1
+    assert timing_issues[0]["severity"] == "CRITICAL"
+    assert "T_10ms_Event" in timing_issues[0]["description"]

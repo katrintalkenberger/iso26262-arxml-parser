@@ -5,6 +5,7 @@ to safely load XML structures, extract architectural metadata, and execute
 structural functional safety checks for automotive software components.
 """
 
+import math
 import os
 from typing import Any
 
@@ -252,7 +253,16 @@ class ARXMLParser:
                 if event_type == "TIMING-EVENT":
                     # ISO 26262 Check: Invalid or missing timing compromises determinism
                     period = self.get_element_text(event,"PERIOD")
-                    if not period or float(period) <= 0:
+                    try:
+                        period_value = float(period)
+                    except (TypeError, ValueError):
+                        period_value = None
+
+                    if (
+                        period_value is None
+                        or not math.isfinite(period_value)
+                        or period_value <= 0
+                    ):
                         issues.append({
                             "severity": "CRITICAL",
                             "type": "Invalid Timing",
@@ -260,7 +270,8 @@ class ARXMLParser:
                                 f"Timing-Event '{event_name}' in SWC "
                                 f"'{swc_name}' has invalid period "
                                 f"({period}s)."
-                            )                        })
+                            ),
+                        })
                     extra_info = f"Period: {period}s"
 
                 elif event_type == "OPERATION-INVOKED-EVENT":
