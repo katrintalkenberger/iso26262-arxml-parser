@@ -5,7 +5,7 @@ This tutorial guides you through setting up the ARXML Parser and running your fi
 ## Prerequisites
 
 Before you begin, ensure you have the following installed on your system:
-* Python 3.8 or higher
+* Python 3.11 or higher
 * Git
 
 ## Step 1: Clone the Repository

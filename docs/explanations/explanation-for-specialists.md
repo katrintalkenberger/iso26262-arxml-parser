@@ -20,7 +20,7 @@ AUTOSAR (root)
 │   ├── DataTypes (data types at application and implementation level)
 │   └── DataTypeMappingSets (mapping between application and implementation data types)
 └── ⚙️ Physical Properties
-    ├── CompuMethods (data type scaling  and units)
+    ├── CompuMethods (data type scaling and units)
     ├── DataConstrs (data type limits and constraints)
     └── Units (data type physical units)
 ```
@@ -125,7 +125,7 @@ The base data type represents the fundamental C-primitive data type on the targe
 
 
 ### Data Type Mapping Sets 
-Die Verbindung zwischen den verschiedenen Abstraktionsebenen der Datentypen erfolgt über ein **Data Type Mapping**. An application data type is mapped to an implementation data dype (`<DATA-TYPE-MAP>`), and the implementation data type can directly relate to its software base type.
+The different abstraction levels of data types are linked via a **Data Type Mapping**. An application data type is mapped to an implementation data type (`<DATA-TYPE-MAP>`), and the implementation data type can directly relate to its software base type.
 
 ```mermaid
 %%{init: { 'themeVariables': { 'edgeLabelBackground': 'transparent' } } }%%
@@ -149,7 +149,7 @@ Die Verbindung zwischen den verschiedenen Abstraktionsebenen der Datentypen erfo
 ## Physical Properties
 In most ARXML descriptions, application data types have software data definition properties that include physical data constraints and computation methods that include units. Implementation data types also have software data definition properties, but they include internal data constraints and references to software base types.
 
-- **Computation Method** (`COMPU-METHODS`)
+- **Computation Method** (`COMPU-METHOD`)
     Defines the mathematical relationship between the physical value and the internal value (integer/bit pattern).
     - *Categories*: `LINEAR` (Factor/Offset), `BITFIELD-TEXTTABLE` (for status flags), and `SCALE-LINEAR` (for non-linear sensors).
     - *Safety Impact*: Ensuring that scaling overflows are prevented during fixed-point arithmetic.

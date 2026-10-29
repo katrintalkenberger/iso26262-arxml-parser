@@ -55,14 +55,14 @@ I am building this project "in public" using the **Diataxis Framework** to ensur
 
 # 💻 Tech Stack
 
-- **Language:** Python 3.10+
+- **Language:** Python 3.11+
 - **Parsing:** lxml (for high-performance XPath queries)
 - **Documentation:** Markdown & Mermaid.js
 - **Methodology:** Diataxis Framework
 
 ## 🗺️ Roadmap & Upcoming Features
 
-This project is actively maintained. The following features are planned for future releases to enhance code quality and engineering efficiency:
+The following features are planned for future releases to enhance code quality and engineering efficiency:
 
 - [x] Basic ARXML Parsing (SWC Types, Composition Layouts)
 - [x] ISO 26262 Structural Integrity Compliance Check (Orphaned Events & Runnables)

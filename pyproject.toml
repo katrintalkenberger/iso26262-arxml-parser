@@ -1,3 +1,8 @@
+[project]
+name = "iso26262-arxml-parser"
+version = "0.1.0"
+requires-python = ">=3.11"
+
 [tool.coverage.report]
 exclude_lines = [
     "pragma: no cover",

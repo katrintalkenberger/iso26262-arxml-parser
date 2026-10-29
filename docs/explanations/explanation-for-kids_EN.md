@@ -62,7 +62,7 @@ Concrete software solutions are built (programmed) to detect and prevent these e
 
 | 🕵️ Situation | ⚠️ Failure | 🎯 Safety Mechanism |
 | :--- | :--- | :--- |
-| Residential street | Engine hits full throttle without reason. | **Double-Check:** The Engine Control Unit only executes a "Full throttle" command if a second independent sensor agrees: "Yes, the pedal is truly pressed!" <br> <img src="../assets/graph-saftey-mechanism.svg" width="400" alt="Planes of logic double-check diagram"> |
+| Residential street | Engine hits full throttle without reason. | **Double-Check:** The Engine Control Unit only executes a "Full throttle" command if a second independent sensor agrees: "Yes, the pedal is truly pressed!" <br> <img src="../assets/graph-safety-mechanism.svg" width="400" alt="Double-check safety mechanism diagram"> |
 | City tunnel | One headlight fails. | The control unit inside the headlight continuously runs self-checks to ensure everything is functional. |
 | Parking space | Camera shows a frozen, incorrect image. | The backup camera unit detects that the image is frozen and instantly switches the screen to a solid black image to alert the driver. |
 
