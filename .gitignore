@@ -31,10 +31,6 @@ coverage.xml
 *drawio.bkp
 .*drawio.bkp
 
-# Project specific
-tests/samples/Test_Sample_File.arxml
-examples/arxml_report_Test_Sample_File.md
-
 # Operating system artifacts
 .DS_Store
 Thumbs.db
