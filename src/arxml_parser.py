@@ -92,6 +92,17 @@ class ARXMLParser:
         """
         xpath_prefix = "./" if direct_only else ".//"
         return element.xpath(f"{xpath_prefix}*[local-name()='{tag_name}']")
+
+    def get_child_elements(self, element: ET._Element) -> list[ET._Element]:
+        """Returns all direct child elements, ignoring comments and text nodes.
+
+        Args:
+            element (ET._Element): The parent XML node.
+
+        Returns:
+            list[ET._Element]: The direct child elements of the node.
+        """
+        return element.xpath("./*")
     
     def get_single_element(self, element: ET._Element, tag_name: str, direct_only: bool=True, default: Any=None) -> Any:
         """Finds the first child element matching the given local tag name.
@@ -229,7 +240,7 @@ class ARXMLParser:
         events_references = []
 
         if events_element:
-            all_events = list(events_element[0])
+            all_events = self.get_child_elements(events_element[0])
             for event in all_events:
                 event_type = str(event.xpath("local-name()"))
                 event_name = self.get_element_text(event,"SHORT-NAME")
@@ -329,15 +340,15 @@ class ARXMLParser:
         # 3. Extract AUTOSAR Per-Instance Memory (PIM) definitions
         pims_element = self.get_elements(swc_element,"AR-TYPED-PER-INSTANCE-MEMORYS",direct_only=False)
         if pims_element:
-            all_pims = list(pims_element[0])
+            all_pims = self.get_child_elements(pims_element[0])
             for pim in all_pims:
                 pim_name = self.get_element_text(pim, "SHORT-NAME")
                 internal_behavior["pims"].append(pim_name)
 
-        # 4. Extract AUTSOAR Shared Parameter definitions
+        # 4. Extract AUTOSAR Shared Parameter definitions
         params_element = self.get_elements(swc_element,"SHARED-PARAMETERS",direct_only=False)
         if params_element:
-            all_params = list(params_element[0])
+            all_params = self.get_child_elements(params_element[0])
             for param in all_params:
                 param_name = self.get_element_text(param, "SHORT-NAME")
                 internal_behavior["parameters"].append(param_name)        
@@ -366,9 +377,9 @@ class ARXMLParser:
         with open(filename, "w", encoding="utf-8") as f:
             # 1. Headline and Introduction
             f.write("# AUTOSAR Architecture & ISO 26262 Safety Report\n\n")
-            f.write("This document contains the static architectural analysis and the  ")
-            f.write("compliance check in accordance with the requirements of **ISO 26262-6** ")
-            f.write("completeness and consistency). \n\n")
+            f.write("This report contains a static analysis of the software ")
+            f.write("architecture with consistency checks to support the verification ")
+            f.write("of the software architectural design according to **ISO 26262-6**.\n\n")
             
             # 2. ISO 26262 Compliance Dashboard
             f.write("## ⚠️ ISO 26262 Architectural Integrity Check\n\n")
@@ -377,11 +388,11 @@ class ARXMLParser:
                 criticals = sum(1 for i in all_architecture_issues if i["severity"] == "CRITICAL")
                 errors = sum(1 for i in all_architecture_issues if i["severity"] == "ERROR")
                 warnings = sum(1 for i in all_architecture_issues if i["severity"] == "WARNING")
-                f.write("**Status:** 🛑 Architektur-Verletzungen gefunden! ")
-                f.write(f"{criticals} Critical, {errors} Error, {warnings} Warning)\n\n")
+                f.write("**Status:** 🛑 Architectural violations found! ")
+                f.write(f"{criticals} Critical, {errors} Error, {warnings} Warning\n\n")
                 
                 # Markdown table for the discrepancies
-                f.write("| Schweregrad | Fehlertyp | Beschreibung |\n")
+                f.write("| Severity | Issue type | Description |\n")
                 f.write("| :--- | :--- | :--- |\n")
                 for issue in all_architecture_issues:
                     if issue["severity"] == "CRITICAL":
@@ -417,11 +428,11 @@ class ARXMLParser:
                 if details["runnables"]:
                     f.write("| Runnable name | Event type | Event name | Additional info |\n")
                     f.write("| :--- | :--- | :--- | :--- |\n")            
-                    for row in details["runnables"]:
-                        f.write(
-                            f"| {row['name']} | {row['trigger_type']} | "
-                            f"{row['event_name']} | {row['extra_info']} |\n"
-                        )
+                    f.writelines(
+                        f"| {row['name']} | {row['trigger_type']} | "
+                        f"{row['event_name']} | {row['extra_info']} |\n"
+                        for row in details["runnables"]
+                    )
                 else:
                     f.write("N/A")
                 f.write("\n\n")
@@ -429,8 +440,7 @@ class ARXMLParser:
                 # Add per-instance-memory (PIM) information
                 f.write("#### Per-Instance Memories (PIMs)\n")
                 if details["pims"]:
-                    for pim in details["pims"]:
-                        f.write(f"- `{pim}`\n")
+                    f.writelines(f"- `{pim}`\n" for pim in details["pims"])
                 else:
                     f.write("N/A\n")
                 f.write("\n")
@@ -438,8 +448,7 @@ class ARXMLParser:
                 # Add shared-parameters information
                 f.write("#### Shared Parameters\n")
                 if details["parameters"]:
-                    for param in details["parameters"]:
-                        f.write(f"- `{param}`\n")
+                    f.writelines(f"- `{param}`\n" for param in details["parameters"])
                 else:
                     f.write("N/A\n")
-                f.write("\n---\n\n")             
+                f.write("\n---\n\n")
