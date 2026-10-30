@@ -1,16 +1,14 @@
 # AUTOSAR Architecture & ISO 26262 Safety Report
 
-This document contains the static architectural analysis and the  compliance check in accordance with the requirements of **ISO 26262-6** completeness and consistency). 
+This report contains a static analysis of the software architecture with consistency checks to support the verification of the software architectural design according to **ISO 26262-6**.
 
 ## ⚠️ ISO 26262 Architectural Integrity Check
 
-**Status:** 🛑 Architektur-Verletzungen gefunden! 1 Critical, 3 Error, 1 Warning)
+**Status:** 🛑 Architectural violations found! 1 Critical, 1 Error, 1 Warning
 
-| Schweregrad | Fehlertyp | Beschreibung |
+| Severity | Issue type | Description |
 | :--- | :--- | :--- |
-| ❌ ERROR | Orphaned Event | Event 'None' in SWC 'NonCompliant_Service_SWC' is missing the runnable reference (`START-ON-EVENT-REF`). |
 | ❌ ERROR | Orphaned Event | Event 'Orphaned_Timer_Event' in SWC 'NonCompliant_Service_SWC' is missing the runnable reference (`START-ON-EVENT-REF`). |
-| ❌ ERROR | Orphaned Event | Event 'None' in SWC 'NonCompliant_Service_SWC' is missing the runnable reference (`START-ON-EVENT-REF`). |
 | 🚨 CRITICAL | Invalid Timing | Timing-Event 'Critical_ZeroTiming_Event' in SWC 'NonCompliant_Service_SWC' has invalid period (0.0s). |
 | ⚠️ WARNING | Untriggered Runnable | Runnable 'Passive_Unused_Runnable' in SWC 'NonCompliant_Service_SWC' is not being actively triggered by any event. |
 
