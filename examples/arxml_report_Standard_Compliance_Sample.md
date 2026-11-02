@@ -1,6 +1,6 @@
 # AUTOSAR Architecture & ISO 26262 Safety Report
 
-This document contains the static architectural analysis and the  compliance check in accordance with the requirements of **ISO 26262-6** completeness and consistency). 
+This report contains a static analysis of the software architecture with consistency checks to support the verification of the software architectural design according to **ISO 26262-6**.
 
 ## ⚠️ ISO 26262 Architectural Integrity Check
 

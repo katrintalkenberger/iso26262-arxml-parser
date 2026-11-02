@@ -193,3 +193,20 @@ def test_invalid_timing_period_is_reported(parser_env, tmp_path, period_xml) -> 
     assert len(timing_issues) == 1
     assert timing_issues[0]["severity"] == "CRITICAL"
     assert "T_10ms_Event" in timing_issues[0]["description"]
+
+
+def test_xml_comments_are_ignored(parser_env, tmp_path) -> None:
+    """Check if XML comments inside EVENTS are not reported as events."""
+    content = Path(parser_env["valid_path"]).read_text(encoding="utf-8")
+    content = content.replace("<EVENTS>\n", "<EVENTS>\n<!-- comment -->\n", 1)
+    test_file = tmp_path / "comment_test.arxml"
+    test_file.write_text(content, encoding="utf-8")
+
+    parser = ARXMLParser(str(test_file))
+    parser.load()
+    swc = parser.get_all_atomic_swcs()[0]
+    internal_behavior, issues = parser.get_swc_internal_behavior(swc)
+
+    # Same result as without the comment: 1 orphaned event, 1 passive runnable
+    assert len(issues) == 2
+    assert all(event[1] is not None for event in internal_behavior["events"])
