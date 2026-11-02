@@ -2,76 +2,59 @@
 
 [![Tests](https://github.com/katrintalkenberger/iso26262-arxml-parser/actions/workflows/tests.yml/badge.svg)](https://github.com/katrintalkenberger/iso26262-arxml-parser/actions/workflows/tests.yml)
 
-Python-based consistency checks for AUTOSAR ARXML files.
+A Python tool that reads AUTOSAR XML (ARXML) files and runs structural consistency checks on software components. The checks support the verification of the software architectural design according to ISO 26262-6. They do not replace a safety assessment.
 
-# 🙋‍♀️ "Mom, what do you actually do at work?"
+The parser loads the ARXML file, extracts software components, events, runnables, per-instance memories and shared parameters, and writes a Markdown report with all findings and their severity.
 
-My children have asked me this many times. To be honest, the answer isn't as simple as "I’m a baker, I bake bread." Usually, I stumble through an explanation about writing computer programs that make cars safe.
+![ARXML input and generated Markdown report](docs/assets/pipeline-comparison.svg)
+*Figure: ARXML input (left) and generated Markdown report (right).*
 
-While that’s a decent high-level summary, it doesn't really show what I’m doing at my desk all day. This project is my attempt to bridge that gap.
+## Quick start
 
-Here, I explain in plain language what a software engineer in the automotive industry actually does. We’ll explore:
+```bash
+git clone https://github.com/katrintalkenberger/iso26262-arxml-parser
+cd iso26262-arxml-parser
+pip install -r requirements.txt
+python -m src.main tests/samples/ISO26262_Violations_Sample.arxml
+```
 
-- **Who actually tells the car what to do?** (The car, its ECUs and BUS system).
-- **Who decides which commands the car has to follow?** (The importance of ISO 26262).
-- **How do you write millions of commands without making any mistakes?** (Model-Based Design explained).
-- **How do you prevent a huge mess with so many messages?** (From ARXML to actual driving).
-  
-# 🚀 The Vision: Automating Safety Compliance
+## Documentation
 
-While the story starts with a simple question, the technical core of this project is solving a real-world engineering pain point: **The manual effort of verifying complex automotive software architectures.**
+The documentation is organized in four parts:
 
-This repository is evolving into a **Python-based ARXML Parser** specifically designed to automate ISO 26262 compliance checks. It bridges the gap between high-level Model-Based Design (MBD) and the underlying XML structures that define modern vehicle behavior.
+- **Tutorials**
+  - [Getting started](docs/tutorials/getting-started.md): Run the parser for the first time on the sample files.
+- **How-to guides**
+  - [Inject architecture faults](docs/how-to/inject-architecture-faults.md): Modify an ARXML file to trigger each check.
+- **Reference**
+  - [CLI](docs/reference/cli.md): Command syntax, arguments and output location.
+  - [API](docs/reference/api.md): Classes, methods and exceptions of the parser.
+  - [Check catalog](docs/reference/checks.md) *(in progress)*: Consistency checks with severity and ISO 26262-6 references.
+- **Explanation**
+  - [Car software safety for kids (EN)](docs/explanation/car-software-safety-for-kids_EN.md) / [(DE)](docs/explanation/car-software-safety-for-kids_DE.md): Car software and functional safety for a non-technical audience. *Peer-reviewed by my 10-year-olds.*
+  - [AUTOSAR ARXML structure](docs/explanation/autosar-arxml-structure.md): Structure of AUTOSAR XML files, for AUTOSAR developers.
+  - [Testing strategy](docs/explanation/testing-strategy.md): Testing approach and coverage, for testers and reviewers.
 
-## Pipeline Transformation at a Glance
+## Project status
 
-The compliance engine ingests highly nested, verbose AUTOSAR XML specifications and compiles them into clear, actionable functional safety tracking dashboards.
+- [x] ARXML parsing of software component types and compositions
+- [x] Consistency checks: orphaned events, invalid timing periods, untriggered runnables
+- [x] Markdown report generation
+- [x] Unit tests with fault-injection samples, CI on Python 3.11 to 3.14
+- [ ] Check catalog with ISO 26262-6 references
+- [ ] SWC analyzer: port interfaces and connections
+- [ ] Data type checker: application to implementation data type mapping
+- [ ] AI-assisted report review: summarize findings and point to relevant sections of the check catalog
+- [ ] Mermaid diagrams of the composition-to-SWC mapping in the report
 
-![AUTOSAR XML to ISO 26262 Markdown Report Transformation](docs/assets/pipeline-comparison.svg)
-*Figure: Automated conversion of raw AUTOSAR XML (left) into a standardized ISO 26262 compliance markdown report (right).*
+## Contributing and license
 
-# 🛠️ Project Status (Work in Progress)
+Guidelines for contributions are in [CONTRIBUTING.md](CONTRIBUTING.md). 
 
-I am building this project "in public" using the **Diataxis Framework** to ensure high-quality documentation from day one.
-
-## Documentation (Docs-as-Code)
-
-- [x] **[Explanation for Kids (DE)](docs/explanations/explanation-for-kids_DE.md)** – *Peer-reviewed by my 10-year-olds.*
-- [x] **[Explanation for Kids (EN)](docs/explanations/explanation-for-kids_EN.md)**
-- [x] **[Explanation for Specialists (EN)](docs/explanations/explanation-for-specialists.md)** – Deep dive into AUTOSAR structures.
-- [x] **[Explanation for Testers (EN)](docs/explanations/explanation-for-testers.md)** – Explanation of testing philosophy and coverage strategy.
-- [x] **[Tutorial](docs/tutorial.md)** – Step-by-step learning guide for execution and verification.
-- [x] **[How-To Guide](docs/how-to-guide.md)** – Practical recipes for fault injection and testing.
-- [x] **[Reference](docs/reference.md)** – Strict API, CLI, and Exception specifications.
-
-## Engineering & Tooling
-
-- [x] **Core Engine:** Base ARXML Parser (lxml based XPath queries).
-- [x] **Safety Rules Engine:** Automated ISO 26262 integrity checks (Orphaned Events & Runnables).
-- [x] **Automated Reporting:** Clean Markdown output generation and safety dashboard compilation.
-- [x] **Test Harness:** Comprehensive regression suite using `pytest` and custom data samples.
-- [ ] **SWC Analyzer:** Deep validation of Software Components and Port Interfaces.
-- [ ] **Data Type Checker:** Mapping Application to Implementation levels.
-
-# 💻 Tech Stack
-
-- **Language:** Python 3.11+
-- **Parsing:** lxml (for high-performance XPath queries)
-- **Documentation:** Markdown & Mermaid.js
-- **Methodology:** Diataxis Framework
-
-## 🗺️ Roadmap & Upcoming Features
-
-The following features are planned for future releases to enhance code quality and engineering efficiency:
-
-- [x] Basic ARXML Parsing (SWC Types, Composition Layouts)
-- [x] ISO 26262 Structural Integrity Compliance Check (Orphaned Events & Runnables)
-- [x] Automated Markdown Report & Dashboard Generation
-- [x] **Automated Quality Gate (Unit Tests):** Implemented a robust test suite using `pytest` and custom fault-injection data samples to verify engine accuracy.
-- [ ] **AI Documentation Reviewer (`ai_doc_reviewer`):** Integrate a local LLM or API gateway to automatically analyze the generated Markdown reports, providing safety recommendations and checking against detailed ISO 26262 safety goals.
-- [ ] **Visual Architecture Export:** Render interactive Mermaid.js diagrams directly within the Markdown report to visualize Composition-to-SWC mapping.
+The ARXML parser is released under the [MIT license](LICENSE).
 
 ---
 
-# 👩‍🔬 About Me
-I am a **Senior Software Engineer & Ph.D. Mathematician** with 8+ years of experience in the automotive industry. I specialize in architecting automated toolchains and ensuring functional safety (ISO 26262) without slowing down the development process.
+## About me
+
+I am a software engineer with a Ph.D. in mathematics and 8+ years in automotive software. I develop MBD toolchains and verification automation (Simulink, Model Advisor checks, ARXML parsers) and have contributed to safety-related projects under ISO 26262 up to ASIL B. [LinkedIn](https://www.linkedin.com/in/katrintalkenberger/)

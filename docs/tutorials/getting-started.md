@@ -39,7 +39,6 @@ The system logs the discovery of the software components. The generated report i
 
 Open this file to verify that the ISO 26262 Architectural Integrity Check section displays a Pass status with zero criticals, errors, or warnings.
 
-
 ## Step 4: Run the Non-Compliant Architecture Verification
 
 To observe how the compliance engine captures functional safety violations, run the parser against the non-compliant sample file:
@@ -57,6 +56,7 @@ The compliance dashboard will display an architectural violation status, highlig
 ---
 
 ## Next Steps
-* To learn how to verify code quality and generate test coverage reports, see the [How-To Guide](how-to-guide.md).
-* For a detailed technical breakdown of all parser functions, look at the [API Reference](reference.md).
-* To understand the underlying AUTOSAR concepts and safety architecture, explore the [Explanations](explanations/explanation-for-specialists.md).
+* To learn how to modify an ARXML file to trigger each check, see [Inject architecture faults](../how-to/inject-architecture-faults.md).
+* For the API and CLI specification, see the [API](../reference/api.md) and [CLI](../reference/cli.md) reference.
+* For the consistency checks with severity and ISO 26262-6 references, see the [check catalog](../reference/checks.md).
+* To understand the structure of AUTOSAR XML files, see [AUTOSAR ARXML structure](../explanation/autosar-arxml-structure.md).

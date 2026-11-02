@@ -39,6 +39,6 @@ Add a new `<RUNNABLE-ENTITY>` inside the `<RUNNABLE-ENTITIES>` container, but do
 
 ---
 
-# Next Steps
-* To understand the technical parameters and return types of specific methods, see the [API Reference](reference.md).
-* To explore the architectural background of the AUTOSAR schema, check out the [Explanations](explanations/explanation-for-specialists.md).
+## Next Steps
+* To understand the technical parameters and return types of specific methods, see the [API Reference](../reference/api.md).
+* To explore the architectural background of the AUTOSAR schema, check out the [Explanations](../explanation/autosar-arxml-structure.md).
