@@ -1,42 +1,40 @@
-# Explanation: Testing Architecture & Safety-Critical Verification Strategy
+# Testing strategy
 
-This document outlines the testing philosophy, structural coverage strategy, and architectural verification boundaries implemented in this repository. To ensure that the AUTOSAR parser executes compliance checks with absolute precision, the testing engine aligns with the rigorous spirit of safety-critical software validation (ISO 26262).
+This document explains how the parser is tested, why the tests are structured this way, and which parts of the code are not covered yet. For the commands to run the tests and the coverage report, see [CONTRIBUTING.md](../../CONTRIBUTING.md).
 
-## Code Coverage & Quality Metrics
+## Scope
 
-In safety-critical automotive engineering (ISO 26262), achieving high structural coverage is mandatory to ensure software integrity. This repository enforces a strict testing standard, achieving **100% coverage on the execution infrastructure** (`src/main.py`) and a solid **85% coverage baseline on the core parsing logic** (`src/arxml_parser.py`).
+The tests verify the behavior of the parser: loading files, extracting software components, running the consistency checks and writing the report. They do not qualify the parser as a software tool according to ISO 26262-8. If the parser is used to support safety-related work, its results still need to be reviewed.
 
-## Code Coverage & Quality Metrics
+## Test data in temporary folders
 
-In safety-critical automotive engineering (ISO 26262), high structural coverage is essential. This repository achieves an exceptional **89% total code coverage** across the entire pipeline. The execution infrastructure (`src/main.py`) sits at **100% coverage**, while the mathematical core methods of the parser reach near-complete validation.
+The tests do not use files from the repository working directory. Each test creates its ARXML input in a temporary folder provided by pytest (`tmp_path`). Pytest creates a new, empty folder for every test and removes old folders automatically.
 
-Our testing strategy deliberately focuses on functional verification and safety-critical edge cases rather than chasing a cosmetic 100% line metric. The remaining uncovered lines represent:
+This has two effects. The tests produce the same result on every machine and in CI, because they do not depend on files that exist only locally. And a test that deletes or overwrites a file, for example an old report, cannot touch real project files.
 
-- **Future-Proof Utility Methods:** Functions like `get_single_element` (currently at 0%) are implemented as defensive API extensions for future structural checks (e.g., Data Type Mapping) and are decoupled from the active parsing pipeline.
-- **Defensive Error Handling:** Inside `get_swc_internal_behavior` and `export_to_markdown`, the remaining uncovered segments consist purely of local catch-blocks, secondary logging calls, and environment-specific I/O exceptions that do not contain core business logic.
+Some tests reuse the valid test file from the fixture and change one detail, such as the value of `<PERIOD>` or an added XML comment. This keeps the test data small and makes clear which detail a test is about.
 
-By isolating unexecuted utility wrappers, we ensure a highly maintainable, regression-proof verification engine that accurately catches real architectural safety violations.
+## Faulty input
 
-### 1. Deterministic Sandbox Testing (tmp_path)
+Real ARXML files can be incomplete or contain unexpected values. The tests therefore include faulty input on purpose:
 
-Our test suite does not read or write real files on your hard drive. Instead, we use Pytest's built-in `tmp_path` tool. This tool automatically creates a temporary, empty folder for each test run and deletes it afterward. 
+- An event without `START-ON-EVENT-REF`. The parser reports it as an orphaned event and continues with the next event.
+- A timing event with a period that is missing, empty, not a number, zero, negative, infinite or `nan`. The parser reports it as a critical timing issue instead of stopping with a Python exception.
+- A runnable that is not referenced by any event. The parser reports it as an untriggered runnable.
+- XML comments between elements. They must not be treated as events.
+- A file that is valid XML but not an AUTOSAR document. `load()` returns `False`.
 
-This design gives us three major advantages:
+Each case checks the reported severity and issue type, not only that no exception occurs.
 
-- **Perfect Reproducibility:** Because the test XML data is generated fresh in memory every time, the tests run exactly the same way on your local computer, a coworker's machine, or an automated pipeline on GitHub.
-- **Zero Risk for Your Workspace:** If a test does something destructive (like deleting an old report or overwriting a file), it only happens inside this isolated temporary folder. There is absolutely no risk of accidentally modifying or deleting important files on your computer.
-- **Ready for Speed:** Because each test gets its own private temporary folder, we can run multiple tests at the same time in parallel without them blocking or interfering with each other.
+## What is not covered
 
-### 2. Testing Robustness and Error Handling
+The entry point `if __name__ == "__main__":` in `src/main.py` is excluded from the coverage measurement. The functions it calls, `resolve_paths()` and `process_arxml_architecture()`, are tested directly. Running the module as a script in an additional test would test the same logic a second time.
 
-We use our test suite to prove that the parser is highly robust and never crashes when processing corrupted or incomplete AUTOSAR files.
+In `src/arxml_parser.py`, the following parts are not covered by tests yet:
 
-- **Preventing Software Crashes (IndexError & KeyError):** 
-  In our tests, we intentionally inject incomplete XML structures — such as an event that is missing its mandatory reference link (`Orphaned_Event`). The test verifies that the parser handles this missing information gracefully: instead of throwing a critical Python exception and crashing, the parsing engine catches the error, logs a structured safety violation, and continues running smoothly.
-- **Validating Type Safety (Value Errors):** 
-  We test how the parser reacts to malformed data types, such as non-numeric text noise inside a timing `<PERIOD>` tag. The test suite ensures that our defensive code catches these value errors instantly and converts them into an explicit compliance issue, keeping the main execution pipeline fully stable.
+- `get_single_element()`, which is currently not used by any check.
+- The extraction of per-instance memories and shared parameters.
+- The handling of `OPERATION-INVOKED-EVENT`.
+- Report sections for components without runnables, per-instance memories or shared parameters.
 
-### 3. Boundary Isolation vs. Test Duplication
-Global execution hooks and top-level script wrappers (`if __name__ == '__main__':`) are deliberately isolated from standard unit tests and excluded via configuration. 
-
-Since the core pipeline functions (`resolve_paths` and `process_arxml_architecture`) are already validated by isolated unit tests with 100% deterministic assertions, writing additional integration tests via `runpy` would merely duplicate test logic without adding semantic value. This follows the pragmatic production standard of prioritizing meaningful test semantics over superficial coverage chasing.
+These are gaps, not intentional exclusions. They should be closed before further checks build on them.

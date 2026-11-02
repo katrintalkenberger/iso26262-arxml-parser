@@ -1,185 +1,261 @@
-# Application Programming Interface (API)
+# API
 
-This reference manual provides a detailed technical specification of the ARXML parser API.
+Classes, functions and exceptions of the ARXML parser. For the command-line usage, see [CLI](cli.md).
 
 ---
 
-## 1. Core API Reference (src/arxml_parser.py)
+## 1. `src/arxml_parser.py`
 
-### 1.1 Class: ARXMLParser
-The central class responsible for safely loading, navigating, filtering, and validating AUTOSAR ARXML structures.
+### 1.1 Class `ARXMLParser`
 
-#### 1.1.1 init
+Loads an ARXML file, provides helper methods to query the XML tree, and runs the consistency checks for atomic software components.
+
+#### 1.1.1 `__init__`
+
 ```python
 def __init__(self, file_path: str)
 ```
-Initializes the parser instance with the target file.
+
+Stores the file path. The file is not read until `load()` is called.
 
 | Parameter | Type | Description |
 | :--- | :--- | :--- |
-| `file_path` | `str` | The physical path to the target ARXML file. |
+| `file_path` | `str` | Path to the ARXML file. |
 
-#### 1.1.2 load
+| Attribute | Type | Description |
+| :--- | :--- | :--- |
+| `file_path` | `str` | Path passed to the constructor. |
+| `tree` | `ET._ElementTree \| None` | Parsed document. `None` before `load()`. |
+| `root` | `ET._Element \| None` | Root element. `None` before `load()`. |
+| `ns` | `dict[str, str]` | Namespace of the root element as `{"ns": <uri>}`. Not used by the queries. |
+
+#### 1.1.2 `load`
+
 ```python
 def load(self) -> bool
 ```
-Safely parses the XML structure into memory using `lxml`.
 
-| Return Type | Description |
+Parses the file with `lxml` and checks that the local name of the root element is `AUTOSAR`.
+
+| Return value | Condition |
 | :--- | :--- |
-| `bool` | `True` if parsing and namespace registration succeeded. |
+| `True` | The file was parsed and the root element is `AUTOSAR`. |
+| `False` | The file cannot be read (`OSError`), is not well-formed XML (`XMLSyntaxError`), or the root element is not `AUTOSAR`. A message is printed to standard output. |
 
-| Raised Exception | Trigger Condition |
-| :--- | :--- |
-| `ARXMLParserError` | If the XML structure is physically corrupt or cannot be parsed. |
+The method does not raise exceptions for these cases. It does not validate the file against the AUTOSAR XML schema.
 
-#### 1.1.3 get_elements
+#### 1.1.3 `get_elements`
+
 ```python
-def get_elements(self, element: ET._Element, tag_name: str, direct_only: bool = True) -> List[ET._Element]
+def get_elements(self, element: ET._Element, tag_name: str, direct_only: bool = True) -> list[ET._Element]
 ```
-Finds all child elements matching a specific AUTOSAR XML tag.
+
+Returns all elements below `element` with the given local name. The namespace is ignored.
 
 | Parameter | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
-| `element` | `ET._Element` | *Required* | The starting XML node for the search. |
-| `tag_name` | `str` | *Required* | Local name of the target XML tag (e.g., `'RUNNABLE-ENTITY'`). |
-| `direct_only` | `bool` | `True` | `True`: search immediate children only (`./`). <br>`False`: search full subtree recursively (`.//`). |
+| `element` | `ET._Element` | required | Start node of the search. |
+| `tag_name` | `str` | required | Local name, for example `"RUNNABLE-ENTITY"`. |
+| `direct_only` | `bool` | `True` | `True`: direct children only. `False`: all descendants. |
 
-| Return Type | Description |
+| Return value | Description |
 | :--- | :--- |
-| `List[ET._Element]` | A list of matching lxml elements (empty list if no elements match). |
+| `list[ET._Element]` | Matching elements in document order. Empty if none match. |
 
-#### 1.1.4 get_single_element
+#### 1.1.4 `get_child_elements`
+
+```python
+def get_child_elements(self, element: ET._Element) -> list[ET._Element]
+```
+
+Returns all direct child elements of `element`. Comments and processing instructions are not included.
+
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `element` | `ET._Element` | Parent node. |
+
+| Return value | Description |
+| :--- | :--- |
+| `list[ET._Element]` | Child elements in document order. |
+
+#### 1.1.5 `get_single_element`
+
 ```python
 def get_single_element(self, element: ET._Element, tag_name: str, direct_only: bool = True, default: Any = None) -> Any
 ```
-Retrieves the first child element matching the local name.
+
+Returns the first element that `get_elements()` would return, or `default`. Currently not used by the checks.
 
 | Parameter | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
-| `element` | `ET._Element` | *Required* | The starting XML node for the search. |
-| `tag_name` | `str` | *Required* | Local name of the target XML tag (e.g., `'INTERNAL-BEHAVIORS'`). |
-| `direct_only` | `bool` | `True` | `True`: search immediate children only (`./`). <br>`False`: search full subtree recursively (`.//`). |
-| `default` | `Any` | `None` | Fallback value if the element does not exist. |
+| `element` | `ET._Element` | required | Start node of the search. |
+| `tag_name` | `str` | required | Local name, for example `"INTERNAL-BEHAVIORS"`. |
+| `direct_only` | `bool` | `True` | `True`: direct children only. `False`: all descendants. |
+| `default` | `Any` | `None` | Returned if no element matches. |
 
-| Return Type | Description |
+| Return value | Description |
 | :--- | :--- |
-| `ET._Element \| Any` | The found XML element node, or the specified default value. |
+| `ET._Element \| Any` | First matching element, or `default`. |
 
-#### 1.1.5 get_element_text
+#### 1.1.6 `get_element_text`
+
 ```python
-def get_element_text(self, element: ET._Element, tag_name: str, direct_only: bool = True, default: Any = None) -> Optional[str]
+def get_element_text(self, element: ET._Element, tag_name: str, direct_only: bool = True, default: Any = None) -> str | None
 ```
-Extracts the stripped text content of an ARXML element.
+
+Returns the text of the first element with the given local name. Whitespace is not removed.
 
 | Parameter | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
-| `element` | `ET._Element` | *Required* | The starting XML node. |
-| `tag_name` | `str` | *Required* | Local name of the XML tag to read (e.g., `'SHORT-NAME'`). |
-| `direct_only` | `bool` | `True` | `True`: check immediate level only. <br>`False`: check full subtree. |
-| `default` | `Any` | `None` | Fallback value if the element contains no text. |
+| `element` | `ET._Element` | required | Start node of the search. |
+| `tag_name` | `str` | required | Local name, for example `"SHORT-NAME"`. |
+| `direct_only` | `bool` | `True` | `True`: direct children only. `False`: all descendants. |
+| `default` | `Any` | `None` | Returned if no element matches or the element has no text. |
 
-| Return Type | Description |
+| Return value | Description |
 | :--- | :--- |
-| `Optional[str]` | Stripped text value of the element, or the default value. |
+| `str \| None` | Text of the element, or `default`. |
 
-#### 1.1.6 get_all_composition_swcs
+#### 1.1.7 `get_all_composition_swcs`
+
 ```python
-def get_all_composition_swcs(self) -> List[ET._Element]
+def get_all_composition_swcs(self) -> list[ET._Element]
 ```
-Extracts all top-level Composition Software Components from the XML tree.
 
-| Return Type | Description |
+Returns all `COMPOSITION-SW-COMPONENT-TYPE` elements in the document, at any depth.
+
+| Return value | Description |
 | :--- | :--- |
-| `List[ET._Element]` | A list of matching `COMPOSITION-SW-COMPONENT-TYPE` elements. |
+| `list[ET._Element]` | Composition elements in document order. |
 
-#### 1.1.7 get_composition_swc_ref
+#### 1.1.8 `get_composition_swc_ref`
+
 ```python
-def get_composition_swc_ref(self, composition: ET._Element) -> Dict[str, List[str]]
+def get_composition_swc_ref(self, composition: ET._Element) -> dict[str, list[str]]
 ```
-Maps internal prototype references for a specific composition component.
+
+Reads all `SW-COMPONENT-PROTOTYPE` elements of a composition.
 
 | Parameter | Type | Description |
 | :--- | :--- | :--- |
-| `composition` | `ET._Element` | A composition component XML node. |
+| `composition` | `ET._Element` | A `COMPOSITION-SW-COMPONENT-TYPE` element. |
 
-| Return Type | Description |
+| Return value | Description |
 | :--- | :--- |
-| `Dict[str, List[str]]` | A dictionary mapping the component's short-name to its child references. |
+| `dict[str, list[str]]` | Two lists of equal length: `"swc_names"` with the `SHORT-NAME` of each prototype and `"swc_refs"` with its `TYPE-TREF`. The entries at the same index belong to the same prototype. |
 
-#### 1.1.8 get_all_atomic_swcs
+#### 1.1.9 `get_all_atomic_swcs`
+
 ```python
-def get_all_atomic_swcs(self) -> List[ET._Element]
+def get_all_atomic_swcs(self) -> list[ET._Element]
 ```
-Scans the structure for all standard AUTOSAR Atomic Software Component Types.
 
-| Covers XML Tags |
-| :--- |
-| `APPLICATION-SW-COMPONENT-TYPE` <br> `COMPLEX-DEVICE-DRIVER-SW-COMPONENT-TYPE` <br> `SERVICE-SW-COMPONENT-TYPE` |
+Returns all elements whose local name contains `SW-COMPONENT-TYPE`, except `COMPOSITION-SW-COMPONENT-TYPE`. This includes, for example, `APPLICATION-SW-COMPONENT-TYPE`, `SERVICE-SW-COMPONENT-TYPE` and `COMPLEX-DEVICE-DRIVER-SW-COMPONENT-TYPE`.
 
-| Return Type | Description |
+| Return value | Description |
 | :--- | :--- |
-| `List[ET._Element]` | A merged list of all atomic component nodes found in the XML tree. |
+| `list[ET._Element]` | Atomic component elements in document order. Empty if `load()` was not successful. |
 
-#### 1.1.9 get_swc_internal_behavior
+#### 1.1.10 `get_swc_internal_behavior`
+
 ```python
-def get_swc_internal_behavior(self, swc_element: ET._Element) -> Tuple[Dict[str, Any], List[Dict[str, str]]]
+def get_swc_internal_behavior(self, swc_element: ET._Element) -> tuple[dict[str, Any], list[dict[str, str]]]
 ```
-Parses internal definitions and runs structural safety checks for ISO 26262 / ASIL-B compliance.
+
+Extracts events, runnables, per-instance memories and shared parameters of one atomic component and runs the consistency checks. Only the first `EVENTS` container found in the component is evaluated.
 
 | Parameter | Type | Description |
 | :--- | :--- | :--- |
-| `swc_element` | `ET._Element` | The atomic software component node to evaluate. |
+| `swc_element` | `ET._Element` | An atomic software component element. |
 
-| Return Type | Description |
-| :--- | :--- |
-| `Tuple[Dict[str, Any], List[Dict[str, str]]]` | A compound tuple containing:<br>1. A dictionary of processed architecture metadata (runnables, events, parameters).<br>2. A list of structural safety issue dictionaries (each containing `severity`, `type`, and `description`). |
+The return value is a tuple of two elements.
 
-#### 1.1.10 export_to_markdown
+**1. Extracted data** (`dict[str, Any]`):
+
+| Key | Type | Content |
+| :--- | :--- | :--- |
+| `"events"` | `list[list[str]]` | One entry per event with a runnable reference: `[event_type, event_name, runnable_ref, extra_info]`. Orphaned events are not included. |
+| `"runnables"` | `list[dict[str, str]]` | One entry per runnable and triggering event with the keys `name`, `trigger_type`, `event_name`, `extra_info`. Runnables without an event have `trigger_type` `"NO-EVENT (Passive / Call-Return)"`. |
+| `"pims"` | `list[str]` | `SHORT-NAME` of each per-instance memory. |
+| `"parameters"` | `list[str]` | `SHORT-NAME` of each shared parameter. |
+
+**2. Issues** (`list[dict[str, str]]`): one dictionary per finding with the keys `severity`, `type` and `description`.
+
+| `type` | `severity` | Condition |
+| :--- | :--- | :--- |
+| `Orphaned Event` | `ERROR` | Event without `START-ON-EVENT-REF`. |
+| `Invalid Timing` | `CRITICAL` | `TIMING-EVENT` whose `PERIOD` is missing, empty, not a number, not finite, zero or negative. |
+| `Untriggered Runnable` | `WARNING` | Runnable that is not referenced by any event. |
+
+See the [check catalog](checks.md) for the rationale of each check.
+
+#### 1.1.11 `export_to_markdown`
+
 ```python
-def export_to_markdown(self, all_swc_details: List[Dict[str, Any]], all_architecture_issues: List[Dict[str, str]], filename: str) -> None
+def export_to_markdown(self, all_swc_details: list[dict[str, Any]], all_architecture_issues: list[dict[str, str]], filename: str) -> None
 ```
-Compiles all gathered component data and validation issues into a human-readable Markdown report.
+
+Writes the Markdown report. The target folder is created if it does not exist. An existing file is overwritten.
 
 | Parameter | Type | Description |
 | :--- | :--- | :--- |
-| `all_swc_details` | `List[Dict[str, Any]]` | Extracted metadata from all components. |
-| `all_architecture_issues` | `List[Dict[str, str]]` | List of collected ISO 26262 violation dictionaries. |
-| `filename` | `str` | Targeted path for the output `.md` file. |
+| `all_swc_details` | `list[dict[str, Any]]` | One entry per component with the keys `name` and `details` (the extracted data from `get_swc_internal_behavior()`). |
+| `all_architecture_issues` | `list[dict[str, str]]` | All issues of all components. |
+| `filename` | `str` | Path of the report file. |
 
 ---
 
-## 2. Application Entry Point (src/main.py)
+## 2. `src/main.py`
 
-### 2.1 process_arxml_architecture
+### 2.1 `process_arxml_architecture`
+
 ```python
 def process_arxml_architecture(arxml_file: str, arxml_report_file: str) -> None
 ```
-Orchestrates the operational loop: triggers the loading sequence, starts validation rules against ISO 26262 requirements, and hands over data to the Markdown export layer.
 
-### 2.2 resolve_paths
+Runs the complete process: load the file, list the compositions, evaluate all atomic components and write the report. Progress is printed to standard output. If `load()` returns `False`, an error message is printed and no report is written.
+
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `arxml_file` | `str` | Path of the ARXML file. |
+| `arxml_report_file` | `str` | Path of the report file. |
+
+### 2.2 `resolve_paths`
+
 ```python
-def resolve_paths() -> Tuple[str, str]
+def resolve_paths() -> tuple[str, str]
 ```
-Evaluates CLI inputs (`sys.argv`), checks physical file existence, handles dynamic fallbacks for missing arguments, and calculates path definitions.
 
-| Return Type | Description |
-| :--- | :--- |
-| `Tuple[str, str]` | Validated input ARXML path and target output report path. |
+Determines the input file from `sys.argv` and derives the report path.
 
-| Raised Exception | Trigger Condition |
+| Command-line input | Input file used |
 | :--- | :--- |
-| `ARXMLFileNotFoundError` | If no valid input file can be resolved in the default directories. |
+| One argument ending in `.arxml` | The given path. |
+| No argument | `tests/samples/Standard_Compliance_Sample.arxml` |
+| More than one argument | Default sample file, with a warning. |
+| Argument without `.arxml` extension | Default sample file, with a warning. |
+
+The report path is `examples/arxml_report_<input file name>.md`, relative to the current working directory. An existing report at this path is deleted.
+
+| Return value | Description |
+| :--- | :--- |
+| `tuple[str, str]` | Input file path and report path. |
+
+| Exception | Condition |
+| :--- | :--- |
+| `ARXMLFileNotFoundError` | The input file does not exist. |
+
+### 2.3 Command-line entry point
+
+When `src/main.py` is run as a module, `resolve_paths()` and `process_arxml_architecture()` are called. An `ARXMLToolError` is printed to standard error and the process exits with code `1`.
 
 ---
 
-## 3. Error & Exception Catalog (src/exceptions.py)
+## 3. `src/exceptions.py`
 
-The tool utilizes a strict exception hierarchy to ensure safe automation inside execution chains (e.g., CI/CD pipelines).
-
-| Exception Class | Parent Class | Trigger Condition |
+| Exception | Parent class | Raised by |
 | :--- | :--- | :--- |
-| `ARXMLToolError` | `Exception` | Global catch-all base class for tool runtime issues. |
-| `ARXMLParserError` | `ARXMLToolError` | Raised when `lxml` fails to read or parse corrupted XML files. |
-| `ARXMLValidationError` | `ARXMLToolError` | Raised if structural boundaries or AUTOSAR safety schemas are breached. |
-| `ARXMLFileNotFoundError`| `ARXMLValidationError`| Raised instantly if the provided input file path does not exist. |
+| `ARXMLToolError` | `Exception` | Not raised directly. Base class for all exceptions of the tool. |
+| `ARXMLValidationError` | `ARXMLToolError` | `load()`, if the root element is not `AUTOSAR`. Caught inside `load()`, which then returns `False`. |
+| `ARXMLFileNotFoundError` | `ARXMLValidationError` | `resolve_paths()`, if the input file does not exist. |
+| `ARXMLParserError` | `ARXMLToolError` | Currently not raised. |
