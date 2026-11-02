@@ -1,4 +1,17 @@
-# "Wer sagt dem Auto eigentlich, was es tun soll?"
+# Wie Software für die Sicherheit von Autos sorgt (für Kinder erklärt)
+
+"Mama, was machst du eigentlich bei der Arbeit?" Das haben mich meine Kinder schon oft gefragt. Ehrlich gesagt ist die Antwort nicht so einfach wie „Ich bin Bäckerin, ich backe Brot.“ Meistens stottere ich mich durch eine Erklärung darüber, dass ich Computerprogramme schreibe, die Autos sicher machen.
+
+Das ist zwar eine ganz gute Zusammenfassung auf hoher Ebene, zeigt aber nicht wirklich, was ich den ganzen Tag an meinem Schreibtisch mache. Mit diesem Projekt versuche ich, diese Lücke zu schließen.
+
+Hier erkläre ich in einfachen Worten, was ein Softwareentwickler in der Automobilindustrie eigentlich macht. Wir werden uns mit folgenden Fragen beschäftigen:
+
+- **Wer sagt dem Auto eigentlich, was es tun soll?** (Das Auto, seine Steuergeräte und das BUS-System).
+- **Wer entscheidet, welchen Befehlen das Auto folgen muss?** (Die Bedeutung der Norm ISO 26262).
+- **Wie schreibt man Millionen von Befehlen, ohne Fehler zu machen?** (Modellbasiertes Design erklärt).
+- **Wie verhindert man bei so vielen Nachrichten ein riesiges Durcheinander?** (Von ARXML bis zum tatsächlichen Fahren).
+
+## "Wer sagt dem Auto eigentlich, was es tun soll?"
 
 Ein Auto ist ein bisschen wie der menschliche Körper. Unser Körper besteht aus vielen verschiedenen Körperteilen und sie alle haben eine bestimmte Aufgabe. Genau so ist es auch beim Auto: Das Fahrgestell gibt dem Auto Stabilität und seine Form. Bei dir hält das Skelett, also deine Knochen, deinen Köper zusammen. Der Motor pumpt Energie durch das Auto, wie das Herz bei dir Blut pumpt. Damit dein Herz pumpen kann, musst du essen. Das Auto "isst" Benzin oder Strom von der Zapfsäule. Die Räder und Reifen bewegen das Auto von einem Ort zum anderen, so wie dich deine Beine und Füße tragen. 
 
@@ -16,7 +29,7 @@ Und wie ist das beim Auto? Dort gibt es auch kleine Nervenknoten, sogenannte Ste
 
 Die Steuergeräte sagen dem Auto also was es tun soll. Aber wer sagt es den Steuergeräten? Hier kommen die Softwarentwickler ins Spiel. Sie schreiben Anweisungen in einer speziellen Sprache, die dem Steuergerät ganz genau sagen, wie es sich verhalten soll. Man nennt das auch Programmieren oder, auf englisch, Coden. Am Ende sind es viele Millionen Zeilen Code, die dem Auto Befehle geben.
 
-# "Wer entscheidet, an welche Befehle sich das Auto halten muss?"
+## "Wer entscheidet, an welche Befehle sich das Auto halten muss?"
 
 Die Steuergeräte im Auto müssen extrem zuverlässig sein. Würde dein Gehirn bei der heißen Herdplatte sagen "Heiß? Ist mir egal.", dann verbrennst du dir die Hand. Auch beim Auto lauern viele solcher Gefahren. Wenn zum Beispiel das Bremssteuergerät bei voller Fahrt plötzlich vergisst, wie man bremst, ist das ein riesiges Problem. Damit das niemals passiert, gibt es ein strenges Regelbuch für alle Leute, die Autos bauen. Dieses Regelbuch heißt ISO 26262.
 
@@ -24,7 +37,7 @@ Die ISO 26262 wird auch "Funktionale Sicherheit" oder "FuSi" genannt, weil sie g
 
 Das ISO 26262 Regelbuch lässt sich dabei in folgende Schritte einteilen: 
 
-## 1. Risiko bewerten
+### 1. Risiko bewerten
 
 Die Experten machen eine sogenannte Gefahrenanalyse & Risikobewertung (auf englisch Hazard Analysis and Risk Assessment, oder kurz HARA). Das ist richtige Detektivarbeit. Verschiedene Leute setzen sich zusammen und überlegen: "In einer bestimmten Situation, was passiert, wenn eine Funktion ausfällt oder falsch reagiert?" und "Welche konkreten Gefahren entstehen?". Zum Beispiel:
 
@@ -34,7 +47,7 @@ Die Experten machen eine sogenannte Gefahrenanalyse & Risikobewertung (auf engli
 | Wir fahren tagsüber durch einen Tunnel in der Stadt. | Das linke Scheinwerferlicht fällt aus. | Wir werden in dem Tunnel schlecht gesehen. |
 | Wir wollen in eine enge Parklücke einparken. | Die Rückfahrkamera zeigt ein "alles ist frei" Bild. | Wir knallen an ein Fahrrad, was hinter uns steht, die Kamera aber nicht gesehen hat. |
 
-## 2. ASIL (Automotive Safety Integrity Level) bestimmen
+### 2. ASIL (Automotive Safety Integrity Level) bestimmen
 
 Dem Risiko wird eine "Wichtigkeits-Note" verliehen:
     
@@ -50,7 +63,7 @@ Dem Risiko wird eine "Wichtigkeits-Note" verliehen:
 | Stadt/Tunnel | Scheinwerfer fällt aus. | Kaum gefährlich, da immer noch das andere Licht funktioniert: 🟢 ASIL A |
 | Einparken  | Kamera zeigt falsches Bild. | Gefährlich, aber wenn der Fahrer vorsichtig fährt und über die Schulter blickt, kein Unfall: 🟠 ASIL C. |
 
-## 3. Sicherheitsziele definieren
+### 3. Sicherheitsziele definieren
 
 Es wird festgelegt, wie sich das System im Fehlerfall verhalten muss, um den Fahrer zu schützen.
 
@@ -60,7 +73,7 @@ Es wird festgelegt, wie sich das System im Fehlerfall verhalten muss, um den Fah
 | Stadt/Tunnel | Scheinwerfer fällt aus. | Das Auto muss immer sichtbar sein, zum Beispiel durch ein Ersatzlicht. |
 | Einparken  | Kamera zeigt falsches Bild. | Warnung an den Fahrer, wenn das Bild nicht stimmt. |
 
-## 4. Sicherheitsmechanismen entwickeln
+### 4. Sicherheitsmechanismen entwickeln
 
 Es werden konkrete Lösungen gebaut (programmiert), die Fehler erkennen und vermeiden.
 
@@ -70,7 +83,7 @@ Es werden konkrete Lösungen gebaut (programmiert), die Fehler erkennen und verm
 | Stadt/Tunnel | Scheinwerfer fällt aus. | Das Steuergerät am Scheinwerferlicht prüft sich immer wieder selbst, ob alles funktioniert. |
 | Einparken  | Kamera zeigt falsches Bild. | Das Steuergerät an der Rückfahrkamera merkt, dass das Bild eingefroren ist und schickt ein "nur schwarzes Bild anzeigen" Signal heraus. |
 
-## 5. Verifizierung & Validierung
+### 5. Verifizierung & Validierung
 
 Durch Tests wird bewiesen, dass die Sicherheitsziele erreicht wurden. Dabei wird auf vielen verschiedenen Ebenen geprüft:
    
@@ -83,8 +96,7 @@ Durch Tests wird bewiesen, dass die Sicherheitsziele erreicht wurden. Dabei wird
 - 🚗 **Systemtest**: Der "Gesamt-Check". Hier wird das fertige Auto (oder das ganze Gerät) so getestet, wie es später auf der Straße fährt.
     - *Beispiel*: Ein Testfahrer fährt auf einer Teststrecke und drückt bei Vollgas auf die Bremse. Wir prüfen: Hält das ganze Auto sicher an, so wie wir es versprochen haben?
 
-
-# "Wie schreibt man Millionen von Befehlen ohne Fehler zu machen?"
+## "Wie schreibt man Millionen von Befehlen ohne Fehler zu machen?"
 
 Jetzt wissen wir: Es gibt ein strenges Regelbuch (die ISO 26262). Aber wie schaffen wir es, dass wir beim Programmieren von so vielen Steuergeräten nicht den Überblick verlieren?
 
@@ -104,8 +116,7 @@ Die Eingangssignale können zum Beispiel vom Gaspedal-Sensor kommen. Die Signale
 
 Der Riesenvorteil: Wir können am Computer auf "Play" drücken und das Auto virtuell fahren lassen, noch bevor das echte Auto überhaupt gebaut wurde! Das nennt man **Simulation**. Wir testen so, ob unsere "Wächter" auch wirklich aufpassen. Das ist unglaublich praktisch, denn so können wir schon früh prüfen, dass unser Sicherheitsmechanismus auch wirklich funktioniert. Und noch praktischer, aus den Modellen können wir automatisch den Code erzeugen lassen, dafür gibt es extra Programme, damit sich durch vertippen keine Fehler einschleichen.
 
-
-# "Wie verhindert man ein riesiges Durcheinander bei so vielen Nachrichten?"
+## "Wie verhindert man ein riesiges Durcheinander bei so vielen Nachrichten?"
 
 Ihr könnt euch vorstellen, bei all den Signalen und Sicherheitsvorkehrungen glühen die Drähte im Auto. Damit dabei kein riesiges Chaos entsteht, gibt es einen **Masterplan der Zusammenarbeit**.
 
