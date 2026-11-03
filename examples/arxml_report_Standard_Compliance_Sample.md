@@ -1,10 +1,10 @@
-# AUTOSAR Architecture & ISO 26262 Safety Report
+# AUTOSAR XML Consistency Report
 
 This report contains a static analysis of the software architecture with consistency checks to support the verification of the software architectural design according to **ISO 26262-6**.
 
-## ⚠️ ISO 26262 Architectural Integrity Check
+## ⚠️ Consistency Check Results
 
-**Status:** ✅ Pass (No structural violations or orphaned elements found).
+**Status:** ✅ Pass (No findings detected).
 
 ---
 

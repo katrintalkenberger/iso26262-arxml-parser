@@ -376,19 +376,19 @@ class ARXMLParser:
         
         with open(filename, "w", encoding="utf-8") as f:
             # 1. Headline and Introduction
-            f.write("# AUTOSAR Architecture & ISO 26262 Safety Report\n\n")
+            f.write("# AUTOSAR XML Consistency Report\n\n")
             f.write("This report contains a static analysis of the software ")
             f.write("architecture with consistency checks to support the verification ")
             f.write("of the software architectural design according to **ISO 26262-6**.\n\n")
             
-            # 2. ISO 26262 Compliance Dashboard
-            f.write("## ⚠️ ISO 26262 Architectural Integrity Check\n\n")
+            # 2. Consistency check results
+            f.write("## ⚠️ Consistency Check Results\n\n")
             if all_architecture_issues:
                 # Count error classes for quick overview
                 criticals = sum(1 for i in all_architecture_issues if i["severity"] == "CRITICAL")
                 errors = sum(1 for i in all_architecture_issues if i["severity"] == "ERROR")
                 warnings = sum(1 for i in all_architecture_issues if i["severity"] == "WARNING")
-                f.write("**Status:** 🛑 Architectural violations found! ")
+                f.write("**Status:** 🛑 Failed: ")
                 f.write(f"{criticals} Critical, {errors} Error, {warnings} Warning\n\n")
                 
                 # Markdown table for the discrepancies
@@ -408,8 +408,7 @@ class ARXMLParser:
                 f.write("\n")
             else:
                 f.write(
-                    "**Status:** ✅ Pass (No structural violations or "
-                    "orphaned elements found).\n\n"
+                    "**Status:** ✅ Pass (No findings detected).\n\n"
                 )
             
             f.write("---\n\n")
