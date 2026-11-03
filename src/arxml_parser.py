@@ -246,7 +246,7 @@ class ARXMLParser:
                 event_name = self.get_element_text(event,"SHORT-NAME")
                 event_ref = self.get_element_text(event,"START-ON-EVENT-REF")
 
-                # ISO 26262 Check: Orphaned event without a Runnable reference
+                # ARX-001: Orphaned event without a Runnable reference
                 if not event_ref:
                     issues.append({
                         "severity": "ERROR",
@@ -262,7 +262,7 @@ class ARXMLParser:
                 # Additional information:
                 extra_info = "N/A"
                 if event_type == "TIMING-EVENT":
-                    # ISO 26262 Check: Invalid or missing timing compromises determinism
+                    # ARX-002: Invalid or missing timing compromises determinism
                     period = self.get_element_text(event,"PERIOD")
                     try:
                         period_value = float(period)
@@ -320,7 +320,7 @@ class ARXMLParser:
                         "extra_info": evt[3]
                     })
             
-            # ISO 26262 Check: Untriggered, passive runnable
+            # ARX-003: Untriggered, passive runnable
             if not found_any_event:
                 internal_behavior["runnables"].append({
                     "name": runnable_name,
