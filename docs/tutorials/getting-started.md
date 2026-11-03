@@ -58,5 +58,5 @@ The section "Consistency Check Results" lists one finding per severity: an inval
 ## Next Steps
 * To learn how to modify an ARXML file to trigger each check, see [Inject architecture faults](../how-to/inject-architecture-faults.md).
 * For the API and CLI specification, see the [API](../reference/api.md) and [CLI](../reference/cli.md) reference.
-* For the consistency checks with severity and ISO 26262-6 references, see the [check catalog](../reference/checks.md).
+* For the conditions and severity of each check, see the [check catalog](../reference/checks.md).
 * To understand the structure of AUTOSAR XML files, see [AUTOSAR ARXML structure](../explanation/autosar-arxml-structure.md).

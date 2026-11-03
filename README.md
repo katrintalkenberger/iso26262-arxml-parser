@@ -29,7 +29,7 @@ The documentation is organized in four parts:
 - **Reference**
   - [CLI](docs/reference/cli.md): Command syntax, arguments and output location.
   - [API](docs/reference/api.md): Classes, methods and exceptions of the parser.
-  - [Check catalog](docs/reference/checks.md) *(in progress)*: Consistency checks with severity and ISO 26262-6 references.
+  - [Check catalog](docs/reference/checks.md) *(in progress)*: Consistency checks with condition, severity and rationale.
 - **Explanation**
   - [Car software safety for kids (EN)](docs/explanation/car-software-safety-for-kids_EN.md) / [(DE)](docs/explanation/car-software-safety-for-kids_DE.md): Car software and functional safety for a non-technical audience. *Peer-reviewed by my 10-year-olds.*
   - [AUTOSAR ARXML structure](docs/explanation/autosar-arxml-structure.md): Structure of AUTOSAR XML files, for AUTOSAR developers.
@@ -41,7 +41,7 @@ The documentation is organized in four parts:
 - [x] Consistency checks: orphaned events, invalid timing periods, untriggered runnables
 - [x] Markdown report generation
 - [x] Unit tests with fault-injection samples, CI on Python 3.11 to 3.14
-- [ ] Check catalog with ISO 26262-6 references
+- [x] Check catalog
 - [ ] SWC analyzer: port interfaces and connections
 - [ ] Data type checker: application to implementation data type mapping
 - [ ] AI-assisted report review: summarize findings and point to relevant sections of the check catalog

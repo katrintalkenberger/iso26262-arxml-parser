@@ -1,8 +1,8 @@
 # Check catalog
 
-This catalog lists the consistency checks that the parser runs on atomic software components, the condition that triggers each finding, its severity and its relation to ISO 26262-6.
+This catalog lists the consistency checks that the parser runs on atomic software components, the condition that triggers each finding and its severity.
 
-The checks support the verification of the software architectural design. They detect structural inconsistencies in the ARXML configuration. They do not assess whether the design is safe, and they do not replace a review or a safety assessment. The parser is not qualified as a software tool according to ISO 26262-8.
+The checks support the verification of the software architectural design (ISO 26262-6:2018, Clause 7). They detect structural inconsistencies in the ARXML configuration. They do not assess whether the design is safe, and they do not replace a review or a safety assessment. The parser is not qualified as a software tool according to ISO 26262-8.
 
 To trigger each finding with a modified ARXML file, see [Inject architecture faults](../how-to/inject-architecture-faults.md).
 
@@ -20,12 +20,12 @@ To trigger each finding with a modified ARXML file, see [Inject architecture fau
 
 ## Checks
 
-| ID | Check | Element | Condition | Severity | Rationale | Notes | ISO 26262-6 | Status |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| ARX-001 | Orphaned event | Any event in `EVENTS` | `START-ON-EVENT-REF` missing or empty | ERROR | The event activates no runnable, so the configuration does not show which function runs. | The event is excluded from further checks. | *to be verified* | implemented |
-| ARX-002 | Invalid timing period | `TIMING-EVENT` with runnable reference | `PERIOD` missing, empty, not a number, not finite, or ≤ 0 | CRITICAL | The activation rate cannot be scheduled, so the timing behavior is undefined. | Only values > 0 are valid. | *to be verified* | implemented |
-| ARX-003 | Untriggered runnable | `RUNNABLE-ENTITY` | Not referenced by any event of the same component | WARNING | The runnable is never activated. This can be intended, for example during integration. | Only the first `EVENTS` container is evaluated. Runnables without `SHORT-NAME` are skipped. | *to be verified* | implemented |
-| ARX-004 | Dangling runnable reference | Any event in `EVENTS` | `START-ON-EVENT-REF` points to no existing runnable | *tbd* | The event refers to a runnable that does not exist. | | *to be verified* | planned |
+| ID | Check | Element | Condition | Severity | Rationale | Notes | Status |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| ARX-001 | Orphaned event | Any event in `EVENTS` | `START-ON-EVENT-REF` missing or empty | ERROR | The event activates no runnable, so the configuration does not show which function runs. | The event is excluded from further checks. | implemented |
+| ARX-002 | Invalid timing period | `TIMING-EVENT` with runnable reference | `PERIOD` missing, empty, not a number, not finite, or ≤ 0 | CRITICAL | The activation rate cannot be scheduled, so the timing behavior is undefined. | Only values > 0 are valid. | implemented |
+| ARX-003 | Untriggered runnable | `RUNNABLE-ENTITY` | Not referenced by any event of the same component | WARNING | The runnable is never activated. This can be intended, for example during integration. | Only the first `EVENTS` container is evaluated. Runnables without `SHORT-NAME` are skipped. | implemented |
+| ARX-004 | Dangling runnable reference | Any event in `EVENTS` | `START-ON-EVENT-REF` points to no existing runnable | *tbd* | The event refers to a runnable that does not exist. | | planned |
 
 Check IDs are stable. An ID is never renumbered or reused, also if a check is removed.
 
