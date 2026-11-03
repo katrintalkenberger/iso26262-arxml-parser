@@ -1,8 +1,8 @@
-"""AUTOSAR ARXML core parsing and ISO 26262 compliance engine.
+"""AUTOSAR ARXML parser and consistency checks.
 
-This module provides the central ARXMLParser class, which leverages lxml 
-to safely load XML structures, extract architectural metadata, and execute 
-structural functional safety checks for automotive software components.
+This module provides the ARXMLParser class, which uses lxml to load ARXML
+files, extract software component data and run structural consistency
+checks on atomic software components.
 """
 
 import math
@@ -15,11 +15,11 @@ from src.exceptions import ARXMLValidationError
 
 
 class ARXMLParser:
-    """Parses and validates functional safety attributes from AUTOSAR files.
+    """Loads AUTOSAR ARXML files and runs consistency checks.
 
-    This class serves as the core compliance engine, utilizing lxml to load 
-    ARXML files, map namespaces dynamically, and evaluate architectural 
-    elements against structural automotive safety criteria.
+    Uses lxml to load the file, provides helper methods to query the XML
+    tree independently of the namespace, and evaluates atomic software
+    components against the checks listed in docs/reference/checks.md.
     """
 
     def __init__(self, file_path):
@@ -207,11 +207,11 @@ class ARXMLParser:
         return self.root.xpath(xpath_query)
     
     def get_swc_internal_behavior(self, swc_element: ET._Element) -> tuple[dict[str, Any], list[dict[str, str]]]:
-        """Parses internal behaviors and runs structural ISO 26262 safety checks.
+        """Extracts the internal behavior of a component and runs the checks.
 
-        Extracts runtime attributes (Events, Runnables, Per-Instance Memory, 
-        and Parameters) and checks them against deterministic ASIL-B design rules 
-        to capture orphaned events, invalid timing periods, or passive runnables.
+        Extracts events, runnables, per-instance memories and shared
+        parameters, and runs checks ARX-001 to ARX-003 (orphaned events,
+        invalid timing periods, untriggered runnables).
 
         Args:
             swc_element (ET._Element): The atomic software component XML node 
@@ -221,9 +221,7 @@ class ARXMLParser:
             tuple[dict[str, Any], list[dict[str, str]]]: A compound tuple:
                 - dict[str, Any]: Extracted metadata maps for events, 
                   runnables, pims, and parameters.
-                - list[dict[str, str]]: A list of structural safety issues, 
-                  where each issue contains 'severity', 'type', and 
-                  'description' keys.
+                - list[dict[str, str]]: A list of findings, where each finding contains  'severity', 'type', and 'description' keys.
         """       
         internal_behavior = {
             "events": [],
@@ -246,7 +244,7 @@ class ARXMLParser:
                 event_name = self.get_element_text(event,"SHORT-NAME")
                 event_ref = self.get_element_text(event,"START-ON-EVENT-REF")
 
-                # ISO 26262 Check: Orphaned event without a Runnable reference
+                # ARX-001: Orphaned event without a Runnable reference
                 if not event_ref:
                     issues.append({
                         "severity": "ERROR",
@@ -262,7 +260,7 @@ class ARXMLParser:
                 # Additional information:
                 extra_info = "N/A"
                 if event_type == "TIMING-EVENT":
-                    # ISO 26262 Check: Invalid or missing timing compromises determinism
+                    # ARX-002: Invalid or missing timing compromises determinism
                     period = self.get_element_text(event,"PERIOD")
                     try:
                         period_value = float(period)
@@ -320,7 +318,7 @@ class ARXMLParser:
                         "extra_info": evt[3]
                     })
             
-            # ISO 26262 Check: Untriggered, passive runnable
+            # ARX-003: Untriggered, passive runnable
             if not found_any_event:
                 internal_behavior["runnables"].append({
                     "name": runnable_name,
@@ -357,17 +355,15 @@ class ARXMLParser:
     
 
     def export_to_markdown(self, all_swc_details: list, all_architecture_issues: list, filename: str) -> None:
-        """Generates a comprehensive architecture and ISO 26262 safety report.
+        """Writes the Markdown report with component data and findings.
 
-        Compiles all collected software component metadata and captured 
-        architectural discrepancies into a standardized, human-readable 
-        Markdown compliance document.
+        Compiles the extracted software component data and all findings
+        into a Markdown report.
 
         Args:
             all_swc_details (list[dict[str, Any]]): Extracted configuration 
                 and behavior metadata from all processed atomic components.
-            all_architecture_issues (list[dict[str, str]]): list of collected 
-                safety and integrity discrepancies found during analysis.
+            all_architecture_issues (list[dict[str, str]]): All findings of the analysis.
             filename (str): Target file system path where the report file 
                 will be written.
         """
@@ -376,19 +372,19 @@ class ARXMLParser:
         
         with open(filename, "w", encoding="utf-8") as f:
             # 1. Headline and Introduction
-            f.write("# AUTOSAR Architecture & ISO 26262 Safety Report\n\n")
+            f.write("# AUTOSAR XML Consistency Report\n\n")
             f.write("This report contains a static analysis of the software ")
             f.write("architecture with consistency checks to support the verification ")
             f.write("of the software architectural design according to **ISO 26262-6**.\n\n")
             
-            # 2. ISO 26262 Compliance Dashboard
-            f.write("## ⚠️ ISO 26262 Architectural Integrity Check\n\n")
+            # 2. Consistency check results
+            f.write("## ⚠️ Consistency Check Results\n\n")
             if all_architecture_issues:
                 # Count error classes for quick overview
                 criticals = sum(1 for i in all_architecture_issues if i["severity"] == "CRITICAL")
                 errors = sum(1 for i in all_architecture_issues if i["severity"] == "ERROR")
                 warnings = sum(1 for i in all_architecture_issues if i["severity"] == "WARNING")
-                f.write("**Status:** 🛑 Architectural violations found! ")
+                f.write("**Status:** 🛑 Findings: ")
                 f.write(f"{criticals} Critical, {errors} Error, {warnings} Warning\n\n")
                 
                 # Markdown table for the discrepancies
@@ -408,8 +404,7 @@ class ARXMLParser:
                 f.write("\n")
             else:
                 f.write(
-                    "**Status:** ✅ Pass (No structural violations or "
-                    "orphaned elements found).\n\n"
+                    "**Status:** ✅ Pass (No findings detected).\n\n"
                 )
             
             f.write("---\n\n")

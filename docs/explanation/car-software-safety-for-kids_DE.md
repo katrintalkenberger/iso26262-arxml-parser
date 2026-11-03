@@ -53,7 +53,7 @@ Dem Risiko wird eine "Wichtigkeits-Note" verliehen:
     
 * 🔴 ASIL D: Extrem wichtig – wenn hier ein Fehler passiert, ist das Leben von Menschen in Gefahr!
 * 🟠 ASIL C: Sehr wichtig, da es schwierig ist die Kontrolle in der Situation zu behalten.
-* 🟡 ASIL B: Wichiger, denn wenn hier etwas passiert, könnte es brenzelig werden, aber ein guter Fahrer kann das meist locker händeln.
+* 🟡 ASIL B: Wichtiger, denn wenn hier etwas passiert, könnte es brenzlig werden, aber ein guter Fahrer kann das meist locker händeln.
 * 🟢 ASIL A: Wichtig, aber die Situation lässt sich gut meistern und es passiert nichts schlimmes.
 * ⚪ QM (Normal und egal für die Sicherheit - z.B. das Autoradio)
 

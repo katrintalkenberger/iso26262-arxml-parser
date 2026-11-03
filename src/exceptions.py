@@ -1,4 +1,4 @@
-"""Custom exception hierarchy for the ISO 26262 ARXML Parser toolchain.
+"""Exception hierarchy of the ARXML parser.
 
 This module defines specific error classes used across the parsing, validation,
 and reporting pipeline to handle structural deviations and infrastructure faults.
@@ -15,8 +15,7 @@ class ARXMLToolError(Exception):
 class ARXMLValidationError(ARXMLToolError):
     """Raised when the ARXML content violates schema or structural rules.
 
-    This includes missing mandatory AUTOSAR elements, illegal cross-references,
-    or failures during the functional safety compliance checks.
+    Raised by load() if the root element is not AUTOSAR.
     """
     pass
 

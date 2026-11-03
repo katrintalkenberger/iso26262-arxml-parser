@@ -11,9 +11,9 @@ Download the files and place them in `tests/samples/` to run the parser against 
 
 ## Injecting Structural Faults for Validation Testing
 
-You can manually manipulate any standard ARXML structure using a text editor to test the three functional safety check layers.
+You can manually manipulate any standard ARXML structure using a text editor to trigger each of the three checks.
 
-### Option 1. Simulating an Orphaned Event (ASIL-B Violation)
+### Option 1. Orphaned event (ARX-001)
 Locate any event structure and completely delete or comment out the `<START-ON-EVENT-REF>` child tag:
 ```xml
 <!-- Non-Compliant Modification -->
@@ -23,7 +23,7 @@ Locate any event structure and completely delete or comment out the `<START-ON-E
 </TIMING-EVENT>
 ```
 
-### Option 2. Simulating an Invalid Timing Period (Determinism Failure)
+### Option 2. Invalid timing period (ARX-002)
 Locate a `<TIMING-EVENT>` that contains a `<PERIOD>` tag. Change the value to `0.0` or a negative number:
 ```xml
 <!-- Non-Compliant Modification -->
@@ -34,8 +34,8 @@ Locate a `<TIMING-EVENT>` that contains a `<PERIOD>` tag. Change the value to `0
 </TIMING-EVENT>
 ```
 
-### Option 3. Simulating an Untriggered Runnable (Passive Code)
-Add a new `<RUNNABLE-ENTITY>` inside the `<RUNNABLE-ENTITIES>` container, but do not create any corresponding event that references this runnable's short-name. The compliance engine will catch this as an unmapped, passive entity and issue a `WARNING`.
+### Option 3. Untriggered runnable (ARX-003)
+Add a new `<RUNNABLE-ENTITY>` inside the `<RUNNABLE-ENTITIES>` container, but do not create any corresponding event that references this runnable's short-name. The parser reports it as an untriggered runnable with severity WARNING
 
 ---
 

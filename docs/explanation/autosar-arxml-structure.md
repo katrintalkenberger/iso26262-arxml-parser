@@ -31,7 +31,7 @@ AUTOSAR (root)
 ### Software Component Types
 A software component (SWC) is a modular, reusable unit of functionality in the application layer of the AUTOSAR architecture. There are different types of SWC:
 
-| Name | XML Tag | Description | Safety Check
+| Name | XML Tag | Description | Typical safety topics
 | ----- | ----- | ----- | ----- |
 | **Application SWC** | `<APPLICATION-SW-COMPONENT-TYPE>` | The standard component for application logic like cruise control or airbag deployment. It interacts only with **Run-Time Environment (RTE)**, never directly with hardware. | Validation of ASIL-Level.|
 | **Complex Device Driver (CDD) SWC** | `<COMPLEX-DEVICE-DRIVER-SW-COMPONENT-TYPE>` | A hardware-dependent component, time critical, without standard interfaces but direct access to hardware/microcontroller, like fast sensor processing. | Analysis of Timing-Constraints. |
@@ -58,7 +58,7 @@ The following table illustrates which elements each SWC may contain.
 ### Port Interfaces
 Following the AUTOSAR standard, SWCs never communicate directly with each other. Instead, communication is organized using port interfaces:
 
-| Name | XML Tag | Description | Safety Check
+| Name | XML Tag | Description | Typical safety topics
 | ----- | ----- | ----- | ----- |
 | **Sender-Receiver (S/R) Interface** | `<SENDER-RECEIVER-INTERFACE>` | Used when one component sends data and another receives it. Common for transmitting signals like speed, temperature, or pressure. Typically asynchronous. | End-to-End protection (Alive Counter, CRC). |
 | **Client-Server (C/S) Interface** | `<CLIENT-SERVER-INTERFACE>` | Enables one component (the client) to call a service or function provided by another component (the server). Often synchronous, can support return values and error codes. | Validation of Error-Codes and Timeout Checks. |
@@ -157,7 +157,7 @@ In most ARXML descriptions, application data types have software data definition
     Specifies the valid range (min/max) for the data.
         - *Physical Constraints*: Limits based on physical reality (e.g., a car cannot have a negative speed).
         - *Internal Constraints*: Limits based on the implementation (e.g., a 12-bit ADC value).
-        - *Safety Impact*: These constraints are the foundation for range checks and plausibility checks in ASIL-compliant software.
+        - *Safety Impact*: These constraints are the foundation for range checks and plausibility checks in safety-related software.
 - **Unit** (`UNITS`)
     Provides the physical unit of measure (e.g. `degC`, `km/h`, `Nm`). While not used for code generation, it is crucial for tool-based documentation and ensuring that different SWCs "speak the same language" (e.g. preventing a torque value in `Nm` from being connected to a port expecting `lb-ft`).
 

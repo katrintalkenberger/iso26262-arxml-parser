@@ -127,7 +127,7 @@ def test_iso26262_internal_behavior_validation(parser_env) -> None:
     assert active_runnable["event_name"] == "T_10ms_Event"
     assert active_runnable["extra_info"] == "Period: 0.01s"
 
-    # 2. Check for ISO 26262 compliance errors
+    # 2. Check the findings
     # Exactly two issues must have been found (1 error due to an orphaned event, 1 warning due to a passive runnable)
     assert len(issues) == 2
     
@@ -149,7 +149,7 @@ def test_export_to_markdown_generation(parser_env, tmp_path) -> None:
     details, issues = parser.get_swc_internal_behavior(swc)
     
     swc_data = [{"name": "EngineCtrl", "details": details}]
-    output_report = tmp_path / "reports" / "compliance_report.md"
+    output_report = tmp_path / "reports" / "consistency_report.md"
     
     # Trigger export
     parser.export_to_markdown(swc_data, issues, str(output_report))
@@ -158,7 +158,7 @@ def test_export_to_markdown_generation(parser_env, tmp_path) -> None:
     assert os.path.exists(output_report)
     with open(output_report, "r", encoding="utf-8") as f:
         content = f.read()
-        assert "# AUTOSAR Architecture & ISO 26262 Safety Report" in content
+        assert "# AUTOSAR XML Consistency Report" in content
         assert "EngineCtrl" in content
 
 
