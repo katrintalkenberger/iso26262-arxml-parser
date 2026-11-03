@@ -58,7 +58,7 @@ The following table illustrates which elements each SWC may contain.
 ### Port Interfaces
 Following the AUTOSAR standard, SWCs never communicate directly with each other. Instead, communication is organized using port interfaces:
 
-| Name | XML Tag | Description | Safety Check
+| Name | XML Tag | Description | Typical safety topics
 | ----- | ----- | ----- | ----- |
 | **Sender-Receiver (S/R) Interface** | `<SENDER-RECEIVER-INTERFACE>` | Used when one component sends data and another receives it. Common for transmitting signals like speed, temperature, or pressure. Typically asynchronous. | End-to-End protection (Alive Counter, CRC). |
 | **Client-Server (C/S) Interface** | `<CLIENT-SERVER-INTERFACE>` | Enables one component (the client) to call a service or function provided by another component (the server). Often synchronous, can support return values and error codes. | Validation of Error-Codes and Timeout Checks. |

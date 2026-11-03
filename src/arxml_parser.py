@@ -384,7 +384,7 @@ class ARXMLParser:
                 criticals = sum(1 for i in all_architecture_issues if i["severity"] == "CRITICAL")
                 errors = sum(1 for i in all_architecture_issues if i["severity"] == "ERROR")
                 warnings = sum(1 for i in all_architecture_issues if i["severity"] == "WARNING")
-                f.write("**Status:** 🛑 Failed: ")
+                f.write("**Status:** 🛑 Findings: ")
                 f.write(f"{criticals} Critical, {errors} Error, {warnings} Warning\n\n")
                 
                 # Markdown table for the discrepancies

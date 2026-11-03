@@ -37,7 +37,7 @@ python -m src.main tests/samples/Standard_Compliance_Sample.arxml
 The system logs the discovery of the software components. The generated report is saved to:
 `examples/arxml_report_Standard_Compliance_Sample.md`
 
-Open this file. The section "Consistency Check Results" shows the status "No findings".
+Open this file. The section "Consistency Check Results" shows the status "✅ Pass (No findings detected).".
 
 ## Step 4: Run the parser on a file with findings
 
