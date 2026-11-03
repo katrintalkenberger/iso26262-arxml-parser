@@ -26,9 +26,9 @@ class ARXMLParser:
         """Initializes the parser instance with a target file path.
 
         Args:
-            file_path (str): The physical file system path to the input 
+            file_path (str): The physical file system path to the input
                 AUTOSAR ARXML configuration file.
-        """        
+        """
         self.file_path = file_path
         self.tree = None
         self.root = None
@@ -37,13 +37,13 @@ class ARXMLParser:
     def load(self) -> bool:
         """Safely loads and parses the ARXML file into an in-memory tree.
 
-        Reads the physical file using lxml, extracts the root element, 
-        validates the global AUTOSAR schema definition, and registers 
+        Reads the physical file using lxml, extracts the root element,
+        validates the global AUTOSAR schema definition, and registers
         the dynamic XML namespace dictionary for downstream parsing.
 
         Returns:
-            bool: True if the file was loaded and validated as a valid 
-                AUTOSAR structure. False if any parsing, validation, or 
+            bool: True if the file was loaded and validated as a valid
+                AUTOSAR structure. False if any parsing, validation, or
                 I/O error occurred.
         """
         try:
@@ -51,7 +51,7 @@ class ARXMLParser:
             self.tree = ET.parse(self.file_path)
             self.root = self.tree.getroot()
 
-              # Check if file is AUTOSAR xml
+            # Check if file is AUTOSAR xml
             if "}" in self.root.tag:
                 local_tag = self.root.tag.split("}")[-1]
             else:
@@ -59,20 +59,21 @@ class ARXMLParser:
 
             if local_tag != "AUTOSAR":
                 raise ARXMLValidationError(
-                    "The file is valid XML, but not a valid AUTOSAR "
-                    "structure."
-                )  
-                       
+                    "The file is valid XML, but not a valid AUTOSAR structure."
+                )
+
             # Extract namespace
             if "}" in self.root.tag:
                 auto_ns = self.root.tag.split("}")[0].strip("{")
-                self.ns = {'ns': auto_ns}
-            return True        
+                self.ns = {"ns": auto_ns}
+            return True
         except (OSError, ET.XMLSyntaxError, ARXMLValidationError) as e:
             print(f"Error loading ARXML: {e}")
             return False
 
-    def get_elements(self, element: ET._Element, tag_name: str, direct_only: bool=True) -> list[ET._Element]:
+    def get_elements(
+        self, element: ET._Element, tag_name: str, direct_only: bool = True
+    ) -> list[ET._Element]:
         """Finds all child elements matching the given local XML tag name.
 
         Uses localized XPath queries to bypass strict namespace prefixes,
@@ -80,14 +81,14 @@ class ARXMLParser:
 
         Args:
             element (ET._Element): The starting XML node for the search.
-            tag_name (str): Local name of the target XML tag 
+            tag_name (str): Local name of the target XML tag
                 (e.g., 'RUNNABLE-ENTITY').
-            direct_only (bool): If True, only searches immediate children 
-                ('./'). If False, searches the full subtree recursively 
+            direct_only (bool): If True, only searches immediate children
+                ('./'). If False, searches the full subtree recursively
                 ('.//').
 
         Returns:
-            list[ET._Element]: A list of matching lxml element nodes. 
+            list[ET._Element]: A list of matching lxml element nodes.
                 Returns an empty list if no elements match the criteria.
         """
         xpath_prefix = "./" if direct_only else ".//"
@@ -103,32 +104,43 @@ class ARXMLParser:
             list[ET._Element]: The direct child elements of the node.
         """
         return element.xpath("./*")
-    
-    def get_single_element(self, element: ET._Element, tag_name: str, direct_only: bool=True, default: Any=None) -> Any:
+
+    def get_single_element(
+        self,
+        element: ET._Element,
+        tag_name: str,
+        direct_only: bool = True,
+        default: Any = None,
+    ) -> Any:
         """Finds the first child element matching the given local tag name.
 
         Queries the underlying tree and extracts the first matching node.
-        If no matching element is found, a customizable fallback value 
+        If no matching element is found, a customizable fallback value
         is returned.
 
         Args:
             element (ET._Element): The starting XML node for the search.
-            tag_name (str): Local name of the target XML tag 
+            tag_name (str): Local name of the target XML tag
                 (e.g., 'INTERNAL-BEHAVIORS').
-            direct_only (bool): If True, only searches immediate children. 
+            direct_only (bool): If True, only searches immediate children.
                 If False, searches the full subtree recursively.
-            default (Any): The fallback value to return if the element 
+            default (Any): The fallback value to return if the element
                 does not exist. Defaults to None.
 
         Returns:
-            Any: The first matching ET._Element node if found; otherwise, 
+            Any: The first matching ET._Element node if found; otherwise,
                 the specified default value.
         """
         elements = self.get_elements(element, tag_name, direct_only)
         return elements[0] if elements else default
 
-
-    def get_element_text(self, element: ET._Element, tag_name: str, direct_only: bool = True, default: Any = None) -> str | None:
+    def get_element_text(
+        self,
+        element: ET._Element,
+        tag_name: str,
+        direct_only: bool = True,
+        default: Any = None,
+    ) -> str | None:
         """Extracts the stripped text content of an ARXML element.
 
         Queries the node for a specific child tag and extracts its text
@@ -136,34 +148,38 @@ class ARXMLParser:
 
         Args:
             element (ET._Element): The starting XML node for the search.
-            tag_name (str): Local name of the target XML tag 
+            tag_name (str): Local name of the target XML tag
                 (e.g., 'SHORT-NAME').
             direct_only (bool): If True, only searches immediate children.
                 If False, searches the full subtree recursively.
-            default (Any): The fallback value to return if the element 
+            default (Any): The fallback value to return if the element
                 does not exist or contains no text. Defaults to None.
 
         Returns:
-            str | None: The stripped text value of the element if found; 
+            str | None: The stripped text value of the element if found;
                 otherwise, the specified default value.
         """
         xpath_prefix = "./" if direct_only else ".//"
-        element_text_list = element.xpath(f"{xpath_prefix}*[local-name()='{tag_name}']/text()")
-        
+        element_text_list = element.xpath(
+            f"{xpath_prefix}*[local-name()='{tag_name}']/text()"
+        )
+
         return element_text_list[0] if element_text_list else default
 
     def get_all_composition_swcs(self):
         """Extracts all top-level Composition Software Components from the tree.
 
-        Scans the entire XML document for composition types that define 
+        Scans the entire XML document for composition types that define
         the high-level software component architecture mapping.
 
         Returns:
             list[ET._Element]: A list of matching lxml elements representing
                 COMPOSITION-SW-COMPONENT-TYPE structures.
         """
-        return self.get_elements(self.root,"COMPOSITION-SW-COMPONENT-TYPE",direct_only=False)
-    
+        return self.get_elements(
+            self.root, "COMPOSITION-SW-COMPONENT-TYPE", direct_only=False
+        )
+
     def get_composition_swc_ref(self, composition: ET._Element) -> dict[str, list[str]]:
         """Maps all internal software component prototype references.
 
@@ -171,7 +187,7 @@ class ARXMLParser:
         and extracts their local names and type definitions.
 
         Args:
-            composition (ET._Element): The composition component XML node 
+            composition (ET._Element): The composition component XML node
                 to analyze.
 
         Returns:
@@ -180,22 +196,24 @@ class ARXMLParser:
                 - "swc_refs": list of corresponding type references (TREF).
         """
         data: dict[str, list[str]] = {"swc_names": [], "swc_refs": []}
-        all_swc = self.get_elements(composition,"SW-COMPONENT-PROTOTYPE",direct_only=False)
+        all_swc = self.get_elements(
+            composition, "SW-COMPONENT-PROTOTYPE", direct_only=False
+        )
         for swc in all_swc:
-            data["swc_names"].append(self.get_element_text(swc,"SHORT-NAME"))
-            data["swc_refs"].append(self.get_element_text(swc,"TYPE-TREF"))
+            data["swc_names"].append(self.get_element_text(swc, "SHORT-NAME"))
+            data["swc_refs"].append(self.get_element_text(swc, "TYPE-TREF"))
         return data
 
     def get_all_atomic_swcs(self) -> list[ET._Element]:
         """Scans the structure for all standard Atomic Software Component Types.
 
-        Queries the XML tree for component definitions while filtering out 
-        high-level composition containers. Covers Application, Complex Device 
+        Queries the XML tree for component definitions while filtering out
+        high-level composition containers. Covers Application, Complex Device
         Driver (CDD), and Service software component types.
 
         Returns:
-            list[ET._Element]: A filtered list of lxml element nodes matching 
-                the atomic component criteria. Returns an empty list if the 
+            list[ET._Element]: A filtered list of lxml element nodes matching
+                the atomic component criteria. Returns an empty list if the
                 tree root is uninitialized.
         """
         if self.root is None:
@@ -205,8 +223,10 @@ class ARXMLParser:
             "local-name() != 'COMPOSITION-SW-COMPONENT-TYPE']"
         )
         return self.root.xpath(xpath_query)
-    
-    def get_swc_internal_behavior(self, swc_element: ET._Element) -> tuple[dict[str, Any], list[dict[str, str]]]:
+
+    def get_swc_internal_behavior(
+        self, swc_element: ET._Element
+    ) -> tuple[dict[str, Any], list[dict[str, str]]]:
         """Extracts the internal behavior of a component and runs the checks.
 
         Extracts events, runnables, per-instance memories and shared
@@ -214,54 +234,59 @@ class ARXMLParser:
         invalid timing periods, untriggered runnables).
 
         Args:
-            swc_element (ET._Element): The atomic software component XML node 
+            swc_element (ET._Element): The atomic software component XML node
                 to evaluate.
 
         Returns:
             tuple[dict[str, Any], list[dict[str, str]]]: A compound tuple:
-                - dict[str, Any]: Extracted metadata maps for events, 
+                - dict[str, Any]: Extracted metadata maps for events,
                   runnables, pims, and parameters.
-                - list[dict[str, str]]: A list of findings, where each finding contains  'severity', 'type', and 'description' keys.
-        """       
+                - list[dict[str, str]]: A list of findings, where each finding
+                  contains 'severity', 'type', and 'description' keys.
+        """
         internal_behavior = {
             "events": [],
             "runnables": [],
             "pims": [],
-            "parameters": []
+            "parameters": [],
         }
         issues = []
 
-        swc_name = self.get_element_text(swc_element, "SHORT-NAME", default="Unknown_SWC")
+        swc_name = self.get_element_text(
+            swc_element, "SHORT-NAME", default="Unknown_SWC"
+        )
 
         # 1. Process and validate AUTOSAR Events
-        events_element = self.get_elements(swc_element,"EVENTS",direct_only=False)
+        events_element = self.get_elements(swc_element, "EVENTS", direct_only=False)
         events_references = []
 
         if events_element:
             all_events = self.get_child_elements(events_element[0])
             for event in all_events:
                 event_type = str(event.xpath("local-name()"))
-                event_name = self.get_element_text(event,"SHORT-NAME")
-                event_ref = self.get_element_text(event,"START-ON-EVENT-REF")
+                event_name = self.get_element_text(event, "SHORT-NAME")
+                event_ref = self.get_element_text(event, "START-ON-EVENT-REF")
 
                 # ARX-001: Orphaned event without a Runnable reference
                 if not event_ref:
-                    issues.append({
-                        "severity": "ERROR",
-                        "type": "Orphaned Event",
-                        "description": (
-                            f"Event '{event_name}' in SWC '{swc_name}' is "
-                            f"missing the runnable reference "
-                            f"(`START-ON-EVENT-REF`)."
-                        )
-                    })
+                    issues.append(
+                        {
+                            "severity": "ERROR",
+                            "type": "Orphaned Event",
+                            "description": (
+                                f"Event '{event_name}' in SWC '{swc_name}' is "
+                                f"missing the runnable reference "
+                                f"(`START-ON-EVENT-REF`)."
+                            ),
+                        }
+                    )
                     continue  # Without a reference, the mapping doesn't make sense
 
                 # Additional information:
                 extra_info = "N/A"
                 if event_type == "TIMING-EVENT":
                     # ARX-002: Invalid or missing timing compromises determinism
-                    period = self.get_element_text(event,"PERIOD")
+                    period = self.get_element_text(event, "PERIOD")
                     try:
                         period_value = float(period)
                     except (TypeError, ValueError):
@@ -272,15 +297,17 @@ class ARXMLParser:
                         or not math.isfinite(period_value)
                         or period_value <= 0
                     ):
-                        issues.append({
-                            "severity": "CRITICAL",
-                            "type": "Invalid Timing",
-                            "description": (
-                                f"Timing-Event '{event_name}' in SWC "
-                                f"'{swc_name}' has invalid period "
-                                f"({period}s)."
-                            ),
-                        })
+                        issues.append(
+                            {
+                                "severity": "CRITICAL",
+                                "type": "Invalid Timing",
+                                "description": (
+                                    f"Timing-Event '{event_name}' in SWC "
+                                    f"'{swc_name}' has invalid period "
+                                    f"({period}s)."
+                                ),
+                            }
+                        )
                     extra_info = f"Period: {period}s"
 
                 elif event_type == "OPERATION-INVOKED-EVENT":
@@ -289,17 +316,21 @@ class ARXMLParser:
                     op_ref = event.xpath(xpath_op)
                     if op_ref:
                         extra_info = f"Operation Ref: {op_ref[0].text}"
-                
-                # TODO: Identify and integrate additional AUTOSAR event types 
+
+                # TODO: Identify and integrate additional AUTOSAR event types
                 # requiring specialized architectural metadata extraction.
-                
-                internal_behavior["events"].append([event_type, event_name, event_ref, extra_info])
+
+                internal_behavior["events"].append(
+                    [event_type, event_name, event_ref, extra_info]
+                )
                 events_references.append(event_ref)
 
         # 2. Process and validate AUTOSAR Runnable Entities
-        all_runnables = self.get_elements(swc_element,"RUNNABLE-ENTITY",direct_only=False)
+        all_runnables = self.get_elements(
+            swc_element, "RUNNABLE-ENTITY", direct_only=False
+        )
         for runnable in all_runnables:
-            runnable_name = self.get_element_text(runnable,"SHORT-NAME",1)
+            runnable_name = self.get_element_text(runnable, "SHORT-NAME", 1)
             if not runnable_name:
                 continue
 
@@ -311,32 +342,40 @@ class ARXMLParser:
 
                     # Get event data from reference list
                     evt = internal_behavior["events"][idx]
-                    internal_behavior["runnables"].append({
-                        "name": runnable_name,
-                        "trigger_type": evt[0],
-                        "event_name": evt[1],
-                        "extra_info": evt[3]
-                    })
-            
+                    internal_behavior["runnables"].append(
+                        {
+                            "name": runnable_name,
+                            "trigger_type": evt[0],
+                            "event_name": evt[1],
+                            "extra_info": evt[3],
+                        }
+                    )
+
             # ARX-003: Untriggered, passive runnable
             if not found_any_event:
-                internal_behavior["runnables"].append({
-                    "name": runnable_name,
-                    "trigger_type": "NO-EVENT (Passive / Call-Return)",
-                    "event_name": "N/A",
-                    "extra_info": "N/A"
-                })
-                issues.append({
-                    "severity": "WARNING",
-                    "type": "Untriggered Runnable",
-                    "description": (
-                        f"Runnable '{runnable_name}' in SWC '{swc_name}' "
-                        f"is not being actively triggered by any event."
-                    )
-                })                
+                internal_behavior["runnables"].append(
+                    {
+                        "name": runnable_name,
+                        "trigger_type": "NO-EVENT (Passive / Call-Return)",
+                        "event_name": "N/A",
+                        "extra_info": "N/A",
+                    }
+                )
+                issues.append(
+                    {
+                        "severity": "WARNING",
+                        "type": "Untriggered Runnable",
+                        "description": (
+                            f"Runnable '{runnable_name}' in SWC '{swc_name}' "
+                            f"is not being actively triggered by any event."
+                        ),
+                    }
+                )
 
         # 3. Extract AUTOSAR Per-Instance Memory (PIM) definitions
-        pims_element = self.get_elements(swc_element,"AR-TYPED-PER-INSTANCE-MEMORYS",direct_only=False)
+        pims_element = self.get_elements(
+            swc_element, "AR-TYPED-PER-INSTANCE-MEMORYS", direct_only=False
+        )
         if pims_element:
             all_pims = self.get_child_elements(pims_element[0])
             for pim in all_pims:
@@ -344,49 +383,61 @@ class ARXMLParser:
                 internal_behavior["pims"].append(pim_name)
 
         # 4. Extract AUTOSAR Shared Parameter definitions
-        params_element = self.get_elements(swc_element,"SHARED-PARAMETERS",direct_only=False)
+        params_element = self.get_elements(
+            swc_element, "SHARED-PARAMETERS", direct_only=False
+        )
         if params_element:
             all_params = self.get_child_elements(params_element[0])
             for param in all_params:
                 param_name = self.get_element_text(param, "SHORT-NAME")
-                internal_behavior["parameters"].append(param_name)        
-        
-        return internal_behavior, issues
-    
+                internal_behavior["parameters"].append(param_name)
 
-    def export_to_markdown(self, all_swc_details: list, all_architecture_issues: list, filename: str) -> None:
+        return internal_behavior, issues
+
+    def export_to_markdown(
+        self, all_swc_details: list, all_architecture_issues: list, filename: str
+    ) -> None:
         """Writes the Markdown report with component data and findings.
 
         Compiles the extracted software component data and all findings
         into a Markdown report.
 
         Args:
-            all_swc_details (list[dict[str, Any]]): Extracted configuration 
+            all_swc_details (list[dict[str, Any]]): Extracted configuration
                 and behavior metadata from all processed atomic components.
-            all_architecture_issues (list[dict[str, str]]): All findings of the analysis.
-            filename (str): Target file system path where the report file 
+            all_architecture_issues (list[dict[str, str]]): All findings of
+                the analysis.
+            filename (str): Target file system path where the report file
                 will be written.
         """
         # Ensure that destination directory exists
         os.makedirs(os.path.dirname(filename), exist_ok=True)
-        
+
         with open(filename, "w", encoding="utf-8") as f:
             # 1. Headline and Introduction
             f.write("# AUTOSAR XML Consistency Report\n\n")
             f.write("This report contains a static analysis of the software ")
             f.write("architecture with consistency checks to support the verification ")
-            f.write("of the software architectural design according to **ISO 26262-6**.\n\n")
-            
+            f.write(
+                "of the software architectural design according to **ISO 26262-6**.\n\n"
+            )
+
             # 2. Consistency check results
             f.write("## ⚠️ Consistency Check Results\n\n")
             if all_architecture_issues:
                 # Count error classes for quick overview
-                criticals = sum(1 for i in all_architecture_issues if i["severity"] == "CRITICAL")
-                errors = sum(1 for i in all_architecture_issues if i["severity"] == "ERROR")
-                warnings = sum(1 for i in all_architecture_issues if i["severity"] == "WARNING")
+                criticals = sum(
+                    1 for i in all_architecture_issues if i["severity"] == "CRITICAL"
+                )
+                errors = sum(
+                    1 for i in all_architecture_issues if i["severity"] == "ERROR"
+                )
+                warnings = sum(
+                    1 for i in all_architecture_issues if i["severity"] == "WARNING"
+                )
                 f.write("**Status:** 🛑 Findings: ")
                 f.write(f"{criticals} Critical, {errors} Error, {warnings} Warning\n\n")
-                
+
                 # Markdown table for the discrepancies
                 f.write("| Severity | Issue type | Description |\n")
                 f.write("| :--- | :--- | :--- |\n")
@@ -403,26 +454,27 @@ class ARXMLParser:
                     )
                 f.write("\n")
             else:
-                f.write(
-                    "**Status:** ✅ Pass (No findings detected).\n\n"
-                )
-            
+                f.write("**Status:** ✅ Pass (No findings detected).\n\n")
+
             f.write("---\n\n")
-            
+
             # 3. Software Component Details
             f.write("## 🧩 Software Component Details\n\n")
             for swc in all_swc_details:
                 swc_name = swc["name"]
                 details = swc["details"]
-                
+
                 # Add SWC headline
                 f.write(f"### Software Component: {swc_name}\n\n")
-                
+
                 # Add runnable information
                 f.write("#### Runnables\n")
                 if details["runnables"]:
-                    f.write("| Runnable name | Event type | Event name | Additional info |\n")
-                    f.write("| :--- | :--- | :--- | :--- |\n")            
+                    f.write(
+                        "| Runnable name | Event type | Event name | "
+                        "Additional info |\n"
+                    )
+                    f.write("| :--- | :--- | :--- | :--- |\n")
                     f.writelines(
                         f"| {row['name']} | {row['trigger_type']} | "
                         f"{row['event_name']} | {row['extra_info']} |\n"
@@ -431,7 +483,7 @@ class ARXMLParser:
                 else:
                     f.write("N/A")
                 f.write("\n\n")
-                
+
                 # Add per-instance-memory (PIM) information
                 f.write("#### Per-Instance Memories (PIMs)\n")
                 if details["pims"]:
@@ -439,7 +491,7 @@ class ARXMLParser:
                 else:
                     f.write("N/A\n")
                 f.write("\n")
-                
+
                 # Add shared-parameters information
                 f.write("#### Shared Parameters\n")
                 if details["parameters"]:
