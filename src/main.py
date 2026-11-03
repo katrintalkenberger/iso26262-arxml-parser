@@ -1,8 +1,8 @@
-"""Execution entry point and CLI orchestration for the ISO 26262 ARXML Verifier.
+"""Command-line entry point of the ARXML parser.
 
-This module resolves file paths from command-line arguments, triggers the 
-core AUTOSAR parsing sequence, and coordinates the functional safety 
-validation and reporting pipeline.
+This module resolves the input and report paths from the command-line
+arguments, runs the parser and the consistency checks, and writes the
+report.
 """
 import os
 import sys
@@ -16,9 +16,7 @@ def process_arxml_architecture(arxml_file: str, arxml_report_file: str) -> None:
     """Executes the full parsing, validation, and reporting pipeline for an ARXML file.
 
     This function orchestrates the lifecycle of the verification process: it
-    initializes the parser, extracts software component compositions, validates
-    atomic components against structural ISO 26262 requirements, and generates
-    the final evaluation report in Markdown format.
+    initializes the parser, extracts software component compositions, runs the consistency checks on all atomic components, and generates the final evaluation report in Markdown format.
 
     Args:
         arxml_file (str): The physical file system path to the input AUTOSAR
@@ -46,7 +44,7 @@ def process_arxml_architecture(arxml_file: str, arxml_report_file: str) -> None:
         name = parser.get_element_text(composition,"SHORT-NAME")
         print(name)
 
-    # 2. Process Atomic Software Components and evaluate ISO 26262 compliance
+    # 2. Process atomic software components and run the consistency checks
     atomic_swcs = parser.get_all_atomic_swcs()
     all_swc_details: list[dict[str, Any]] = []
     all_architecture_issues: list[dict[str, str]] = []
@@ -55,7 +53,7 @@ def process_arxml_architecture(arxml_file: str, arxml_report_file: str) -> None:
     for swc in atomic_swcs:
         swc_name = parser.get_element_text(swc, "SHORT-NAME", default="Unknown_SWC")
         
-        # Extract internal behavior and perform structural safety checks
+        # Extract internal behavior and run the consistency checks
         details, issues = parser.get_swc_internal_behavior(swc)
                
         # Compile metadata for reporting
@@ -66,7 +64,7 @@ def process_arxml_architecture(arxml_file: str, arxml_report_file: str) -> None:
         all_swc_details.append(swc_data)
         all_architecture_issues.extend(issues)
 
-    # 3. Generate human-readable architectural compliance report
+    # 3. Write the Markdown report
     parser.export_to_markdown(all_swc_details, all_architecture_issues, arxml_report_file)
     print(f"\nAnalysis complete. Report generated at: {arxml_report_file}")
 

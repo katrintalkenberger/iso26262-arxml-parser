@@ -25,9 +25,9 @@ Install the required Python packages using `pip`. It is recommended to use a vir
 pip install -r requirements.txt
 ```
 
-## Step 3: Run the Compliant Architecture Verification
+## Step 3: Run the parser on a consistent file
 
-The repository contains a fully compliant software architecture file inside the `tests/samples` directory. Run the following command from the repository root directory:
+The `tests/samples` directory contains a file without findings. Run the following command from the repository root directory:
 
 ```bash
 python -m src.main tests/samples/Standard_Compliance_Sample.arxml
@@ -37,11 +37,11 @@ python -m src.main tests/samples/Standard_Compliance_Sample.arxml
 The system logs the discovery of the software components. The generated report is saved to:
 `examples/arxml_report_Standard_Compliance_Sample.md`
 
-Open this file to verify that the ISO 26262 Architectural Integrity Check section displays a Pass status with zero criticals, errors, or warnings.
+Open this file. The section "Consistency Check Results" shows the status "No findings".
 
-## Step 4: Run the Non-Compliant Architecture Verification
+## Step 4: Run the parser on a file with findings
 
-To observe how the compliance engine captures functional safety violations, run the parser against the non-compliant sample file:
+Run the parser against the sample file that contains configuration faults:
 
 ```bash
 python -m src.main tests/samples/ISO26262_Violations_Sample.arxml
@@ -51,7 +51,7 @@ python -m src.main tests/samples/ISO26262_Violations_Sample.arxml
 The system detects structural deficiencies and logs them. Open the newly generated report at:
 `examples/arxml_report_ISO26262_Violations_Sample.md`
 
-The compliance dashboard will display an architectural violation status, highlighting the captured critical timing faults, orphaned events, and untriggered runnables.
+The section "Consistency Check Results" lists one finding per severity: an invalid timing period (CRITICAL), an orphaned event (ERROR) and an untriggered runnable (WARNING). The [check catalog](../reference/checks.md) explains each finding.
 
 ---
 
