@@ -59,7 +59,7 @@ Next, a "priority grade" is assigned to each risk based on how dangerous it is:
 | :--- | :--- | :--- |
 | Residential street | Engine hits full throttle without reason. | Highly critical because the driver has no time to react: 🔴 ASIL D |
 | City tunnel | One headlight fails. | Barely dangerous because the other headlight is still working fine: 🟢 ASIL A |
-| Parking space | Camera shows a frozen, incorrect image. | Annoying, but if the driver moves slowly and looks over their shoulder, an accident is avoided: 🟠 ASIL C |
+| Parking space | Camera shows a frozen, incorrect image. | Dangerous, but if the driver moves slowly and looks over their shoulder, an accident is avoided: 🟡 ASIL B |
 
 ### 3. 🛡️ Define Safety Goals
 Experts establish exactly how the system must behave during a failure to protect the driver.
@@ -107,7 +107,7 @@ These models look like pictures or blueprints. In programs like **MATLAB/Simulin
 
 The incoming signals might come from the gas pedal sensor, for example. These signals then flow into a "guardian" function block, which processes the information and passes the results along.
 
-The massive advantage of this approach is that we can simply press the "Play" button on our computer to drive the car virtually—long before the physical car is even built! This is called **Simulation**. We use it to test whether our "guardians" are paying attention and doing their jobs correctly. It is incredibly practical because it allows us to verify early on that our safety mechanisms actually work. Even better, we can automatically generate the final computer code directly from these models using specialized software tools. This ensures that no typos or manual human mistakes slip into the code.
+The massive advantage of this approach is that we can simply press the "Play" button on our computer to drive the car virtually—long before the physical car is even built! This is called **Simulation**. We use it to test whether our "guardians" are paying attention and doing their jobs correctly. It is incredibly practical because it allows us to verify early on that our safety mechanisms actually work. Even better, we can automatically generate the final computer code directly from these models using specialized software tools. This avoids many typos and manual mistakes in the code.
 
 ## "How Do You Prevent a Giant Mess with So Many Messages?"
 
@@ -122,4 +122,4 @@ In the automotive world, this plan is called an ARXML file. It acts like a massi
 
 The catch is: this master plan is not a normal book. It is a digital file containing millions of lines of text. For a human to search for a mistake inside it would be like trying to find a needle in a haystack as big as a soccer stadium!
 
-Because we cannot afford to make any mistakes (remember ISO 26262?), I built a special tool: a Python Parser. My program reads through this massive master plan in fractions of a second and instantly finds the exact spots that matter to our "safety guardians." This means we don't have to guess — we know for a fact that all the programs are working together perfectly, and the car remains completely safe.
+Because we cannot afford to make mistakes (remember ISO 26262?), I built a special tool: a Python parser. My program reads through this huge master plan in a fraction of a second and finds the spots where the plan does not fit together, for example a "guardian" that is never switched on. This way, the engineers can fix these spots early, long before the car is built.

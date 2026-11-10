@@ -61,7 +61,7 @@ Dem Risiko wird eine "Wichtigkeits-Note" verliehen:
 | --------- | --------- | ---------- |
 | Spielstraße | Motor gibt grundlos Vollgas. | Super kritisch, da der Fahrer keine Chance hat zu reagieren: 🔴 ASIL D |
 | Stadt/Tunnel | Scheinwerfer fällt aus. | Kaum gefährlich, da immer noch das andere Licht funktioniert: 🟢 ASIL A |
-| Einparken  | Kamera zeigt falsches Bild. | Gefährlich, aber wenn der Fahrer vorsichtig fährt und über die Schulter blickt, kein Unfall: 🟠 ASIL C. |
+| Einparken  | Kamera zeigt falsches Bild. | Gefährlich, aber wenn der Fahrer vorsichtig fährt und über die Schulter blickt, kein Unfall: 🟡 ASIL B |
 
 ### 3. Sicherheitsziele definieren
 
@@ -114,7 +114,7 @@ Diese Modelle sehen aus wie Bilder, wie ein Bauplan. In Programmen wie **MATLAB/
 
 Die Eingangssignale können zum Beispiel vom Gaspedal-Sensor kommen. Die Signale gehen dann an eine "Wächter"-Funktion, welche das Ergebnis in Form von Signalen weiterleitet.
 
-Der Riesenvorteil: Wir können am Computer auf "Play" drücken und das Auto virtuell fahren lassen, noch bevor das echte Auto überhaupt gebaut wurde! Das nennt man **Simulation**. Wir testen so, ob unsere "Wächter" auch wirklich aufpassen. Das ist unglaublich praktisch, denn so können wir schon früh prüfen, dass unser Sicherheitsmechanismus auch wirklich funktioniert. Und noch praktischer, aus den Modellen können wir automatisch den Code erzeugen lassen, dafür gibt es extra Programme, damit sich durch vertippen keine Fehler einschleichen.
+Der Riesenvorteil: Wir können am Computer auf "Play" drücken und das Auto virtuell fahren lassen, noch bevor das echte Auto überhaupt gebaut wurde! Das nennt man **Simulation**. Wir testen so, ob unsere "Wächter" auch wirklich aufpassen. Das ist unglaublich praktisch, denn so können wir schon früh prüfen, dass unser Sicherheitsmechanismus auch wirklich funktioniert. Und noch praktischer: Aus den Modellen können wir mit speziellen Programmen automatisch den Code erzeugen lassen. So schleichen sich viel weniger Tippfehler ein.
 
 ## "Wie verhindert man ein riesiges Durcheinander bei so vielen Nachrichten?"
 
@@ -129,4 +129,4 @@ In der Autowelt heißt dieser Plan ARXML-Datei. Sie ist wie ein riesiges, digita
 
 Das Problem: Dieser Masterplan ist kein normales Buch. Es ist eine digitale Datei mit Millionen von Zeilen. Wenn ein Mensch darin nach einem Fehler sucht, ist das so, als müsste er eine Nadel in einem Heuhaufen finden, der so groß ist wie ein Fußballstadion. 
 
-Weil wir uns aber keine Fehler erlauben dürfen (erinnert ihr euch an die ISO 26262?), habe ich ein spezielles Werkzeug gebaut: Einen Python Parser. Mein Programm liest diesen riesigen Masterplan blitzschnell durch und findet sofort die Stellen, die für unsere „Sicherheits-Wächter“ wichtig sind. So müssen wir nicht raten, sondern wissen sicher: Alle Programme arbeiten perfekt zusammen und das Auto bleibt sicher.
+Weil wir uns aber keine Fehler erlauben dürfen (erinnert ihr euch an die ISO 26262?), habe ich ein spezielles Werkzeug gebaut: einen Python-Parser. Mein Programm liest diesen riesigen Masterplan blitzschnell durch und findet die Stellen, an denen der Plan nicht zusammenpasst, zum Beispiel einen „Wächter“, der nie eingeschaltet wird. So können die Ingenieure diese Stellen früh korrigieren, lange bevor das Auto gebaut wird.
